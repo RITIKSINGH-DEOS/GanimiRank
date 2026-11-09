@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;600;700&family=Playfair+Display:ital,wght@1,500;1,600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Alex+Brush&family=Dancing+Script:wght@500;600;700&family=Great+Vibes&family=Pinyon+Script&family=Playfair+Display:ital,wght@1,500;1,600&display=swap');
 @import "tailwindcss";
 
 :root {
@@ -133,9 +133,10 @@ body {
   animation: gentle-pulse 2.8s infinite ease-in-out;
 }
 
-/* Premium & Cursive Typography Utilities */
+/* Premium Calligraphy & Script Typography Utilities */
+.font-calligraphy,
 .font-cursive {
-  font-family: 'Dancing Script', 'Brush Script MT', 'Snell Roundhand', cursive;
+  font-family: 'Great Vibes', 'Pinyon Script', 'Alex Brush', cursive;
 }
 
 .font-luxury {
