@@ -86,7 +86,6 @@ export default function Home() {
   const [result, setResult] = useState<KeywordAnalyzeResponse | null>(null);
   const [activeTab, setActiveTab] = useState<"serp" | "aeo" | "content">("serp");
   const [copiedText, setCopiedText] = useState<string | null>(null);
-  const [showSerpAudit, setShowSerpAudit] = useState(false);
 
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -483,138 +482,80 @@ export default function Home() {
 
             {/* TAB 1: Competing Titles & Topics with Search Volume & Competition */}
             {activeTab === "serp" && (
-              <div className="space-y-4">
-                <div className="rounded-xl border border-zinc-800/80 bg-zinc-900/40 divide-y divide-zinc-800/50">
-                  {(!result.competitor_topics || result.competitor_topics.length === 0) ? (
-                    <div className="p-8 text-center text-xs text-zinc-500">
-                      No competitor topics found.
-                    </div>
-                  ) : (
-                    result.competitor_topics.map((topic) => (
-                      <div
-                        key={topic.position}
-                        className="p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-zinc-900/60 transition-colors"
-                      >
-                        <div className="flex items-start gap-3 min-w-0">
-                          <span className="text-xs font-mono text-zinc-500 w-5 pt-0.5 shrink-0">
-                            #{topic.position}
-                          </span>
-                          <div className="min-w-0 space-y-1">
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <span className="text-xs sm:text-sm font-semibold text-zinc-100">
-                                {topic.title}
-                              </span>
-                            </div>
-                            <div className="flex items-center gap-2 flex-wrap text-[11px] text-zinc-400 font-mono">
-                              <span>{topic.keyword}</span>
-                              <span className="text-zinc-600">•</span>
-                              <span className="text-zinc-500 text-[10px] uppercase font-sans tracking-wide">
-                                {topic.intent}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Metrics & Action */}
-                        <div className="flex items-center gap-3 shrink-0 self-end sm:self-center pl-8 sm:pl-0">
-                          {/* Search Volume Pill */}
-                          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-zinc-800/70 border border-zinc-700/50 text-xs">
-                            <Flame className="w-3 h-3 text-orange-400" />
-                            <span className="font-mono font-medium text-emerald-400">
-                              {topic.search_volume}
-                            </span>
-                          </div>
-
-                          {/* Competition Pill */}
-                          <div className="flex flex-col items-end">
-                            <span
-                              className={`text-[10px] font-semibold px-2 py-0.5 rounded border ${
-                                topic.competition_level === "Low"
-                                  ? "text-emerald-400 bg-emerald-500/10 border-emerald-500/20"
-                                  : topic.competition_level === "Medium"
-                                  ? "text-amber-400 bg-amber-500/10 border-amber-500/20"
-                                  : "text-rose-400 bg-rose-500/10 border-rose-500/20"
-                              }`}
-                            >
-                              {topic.competition_level} Competition
-                            </span>
-                            <span className="text-[9px] text-zinc-500 font-mono mt-0.5">
-                              {topic.kgr_status}
-                            </span>
-                          </div>
-
-                          {/* 1-Click Deep Scan Button */}
-                          <button
-                            onClick={() => {
-                              setKeyword(topic.keyword);
-                              handleAnalyze(topic.keyword);
-                            }}
-                            className="px-2.5 py-1 text-[11px] font-medium text-zinc-300 hover:text-white bg-zinc-800 hover:bg-zinc-700 rounded border border-zinc-700 transition-colors flex items-center gap-1 cursor-pointer shrink-0"
-                            title="Deep scan this competitor topic"
-                          >
-                            Analyze
-                            <ArrowUpRight className="w-3 h-3 text-zinc-400" />
-                          </button>
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
-
-                {/* Collapsible / Secondary Google SERP Ranking Pages */}
-                {result.serp_results && result.serp_results.length > 0 && (
-                  <div className="p-3.5 rounded-xl border border-zinc-800/60 bg-zinc-950/40 space-y-2">
-                    <div className="flex items-center justify-between">
-                      <button
-                        onClick={() => setShowSerpAudit(!showSerpAudit)}
-                        className="text-xs font-medium text-zinc-400 hover:text-zinc-200 flex items-center gap-1.5 transition-colors cursor-pointer"
-                      >
-                        <span>{showSerpAudit ? "Hide" : "View"} Google Page 1 Ranking Pages ({result.serp_results.length} URLs)</span>
-                        <span className="text-[10px] text-zinc-500">{showSerpAudit ? "▲" : "▼"}</span>
-                      </button>
-                      <a
-                        href={`https://www.google.com/search?q=${encodeURIComponent(result.keyword)}`}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-[11px] text-zinc-500 hover:text-zinc-300 flex items-center gap-1 transition-colors"
-                      >
-                        Open in Google
-                        <ArrowUpRight className="w-3 h-3" />
-                      </a>
-                    </div>
-
-                    {showSerpAudit && (
-                      <div className="divide-y divide-zinc-800/40 pt-2">
-                        {result.serp_results.map((item) => (
-                          <div key={item.position} className="py-2.5 flex items-start justify-between gap-3 text-xs">
-                            <div className="min-w-0 space-y-0.5">
-                              <div className="flex items-center gap-2">
-                                <span className="font-mono text-zinc-500">#{item.position}</span>
-                                <a
-                                  href={item.url}
-                                  target="_blank"
-                                  rel="noreferrer"
-                                  className="text-zinc-300 hover:text-white hover:underline truncate"
-                                >
-                                  {item.title}
-                                </a>
-                              </div>
-                              <p className="text-[11px] text-zinc-500 font-mono">{item.domain}</p>
-                            </div>
-                            <div className="shrink-0">
-                              {item.is_weak_spot ? (
-                                <span className="text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
-                                  {item.weak_spot_type || "Weak Spot"}
-                                </span>
-                              ) : (
-                                <span className="text-[10px] text-zinc-500 px-2 py-0.5">Authority</span>
-                              )}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
+              <div className="rounded-xl border border-zinc-800/80 bg-zinc-900/40 divide-y divide-zinc-800/50">
+                {(!result.competitor_topics || result.competitor_topics.length === 0) ? (
+                  <div className="p-8 text-center text-xs text-zinc-500">
+                    No competitor topics found.
                   </div>
+                ) : (
+                  result.competitor_topics.map((topic) => (
+                    <div
+                      key={topic.position}
+                      className="p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-zinc-900/60 transition-colors"
+                    >
+                      <div className="flex items-start gap-3 min-w-0">
+                        <span className="text-xs font-mono text-zinc-500 w-5 pt-0.5 shrink-0">
+                          #{topic.position}
+                        </span>
+                        <div className="min-w-0 space-y-1">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="text-xs sm:text-sm font-semibold text-zinc-100">
+                              {topic.title}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2 flex-wrap text-[11px] text-zinc-400 font-mono">
+                            <span>{topic.keyword}</span>
+                            <span className="text-zinc-600">•</span>
+                            <span className="text-zinc-500 text-[10px] uppercase font-sans tracking-wide">
+                              {topic.intent}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Metrics & Action */}
+                      <div className="flex items-center gap-3 shrink-0 self-end sm:self-center pl-8 sm:pl-0">
+                        {/* Search Volume Pill */}
+                        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-zinc-800/70 border border-zinc-700/50 text-xs">
+                          <Flame className="w-3 h-3 text-orange-400" />
+                          <span className="font-mono font-medium text-emerald-400">
+                            {topic.search_volume}
+                          </span>
+                        </div>
+
+                        {/* Competition Pill */}
+                        <div className="flex flex-col items-end">
+                          <span
+                            className={`text-[10px] font-semibold px-2 py-0.5 rounded border ${
+                              topic.competition_level === "Low"
+                                ? "text-emerald-400 bg-emerald-500/10 border-emerald-500/20"
+                                : topic.competition_level === "Medium"
+                                ? "text-amber-400 bg-amber-500/10 border-amber-500/20"
+                                : "text-rose-400 bg-rose-500/10 border-rose-500/20"
+                            }`}
+                          >
+                            {topic.competition_level} Competition
+                          </span>
+                          <span className="text-[9px] text-zinc-500 font-mono mt-0.5">
+                            {topic.kgr_status}
+                          </span>
+                        </div>
+
+                        {/* 1-Click Deep Scan Button */}
+                        <button
+                          onClick={() => {
+                            setKeyword(topic.keyword);
+                            handleAnalyze(topic.keyword);
+                          }}
+                          className="px-2.5 py-1 text-[11px] font-medium text-zinc-300 hover:text-white bg-zinc-800 hover:bg-zinc-700 rounded border border-zinc-700 transition-colors flex items-center gap-1 cursor-pointer shrink-0"
+                          title="Deep scan this competitor topic"
+                        >
+                          Analyze
+                          <ArrowUpRight className="w-3 h-3 text-zinc-400" />
+                        </button>
+                      </div>
+                    </div>
+                  ))
                 )}
               </div>
             )}
