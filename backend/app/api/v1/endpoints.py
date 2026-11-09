@@ -36,7 +36,7 @@ def analyze_keyword(payload: KeywordAnalyzeRequest):
     - Real-Time Allintitle extraction (KGR)
     - Top 10 SERP Audit & Weak Spot Identification
     - AEO & GEO Readiness Score
-    - Deterministic Opportunity Score (0-100) & Verdict
+    - Deterministic Opportunity Score (0-100), Search Volume & Verdict
     - High-CTR Title & PAA Headings Generation
     """
     try:
@@ -73,8 +73,8 @@ def analyze_keyword(payload: KeywordAnalyzeRequest):
             serp_results=serp_results
         )
         
-        # 5. Opportunity Scoring & Verdict
-        opp_score, verdict, demand_level = calculate_opportunity(
+        # 5. Opportunity Scoring, Search Volume & Verdict
+        opp_score, verdict, demand_level, volume_str, volume_num, kgr_val = calculate_opportunity(
             allintitle_count=allintitle_count,
             serp_results=serp_results,
             expansion_count=len(expanded)
@@ -91,6 +91,9 @@ def analyze_keyword(payload: KeywordAnalyzeRequest):
             opportunity_score=opp_score,
             verdict=verdict,
             demand_level=demand_level,
+            estimated_monthly_volume=volume_str,
+            volume_numeric=volume_num,
+            kgr_ratio=kgr_val,
             allintitle_count=allintitle_count,
             weak_spots_found=sum(1 for s in serp_results if s.is_weak_spot),
             total_serp_scanned=len(serp_results),

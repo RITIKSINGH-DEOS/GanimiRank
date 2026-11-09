@@ -40,6 +40,9 @@ class KeywordAnalyzeResponse(BaseModel):
     opportunity_score: int # 0 to 100
     verdict: str # GOLDMINE, MODERATE, SKIP
     demand_level: str # HIGH, MEDIUM, MICRO
+    estimated_monthly_volume: str = "~350 / mo"
+    volume_numeric: int = 350
+    kgr_ratio: float = 0.01
     allintitle_count: int
     weak_spots_found: int
     total_serp_scanned: int

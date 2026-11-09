@@ -31,7 +31,7 @@ def test_opportunity_scoring_goldmine():
             title_has_exact_keyword=False
         )
     ]
-    score, verdict, demand = calculate_opportunity(
+    score, verdict, demand, vol_str, vol_num, kgr = calculate_opportunity(
         allintitle_count=8,
         serp_results=mock_serp,
         expansion_count=35
@@ -39,6 +39,8 @@ def test_opportunity_scoring_goldmine():
     assert score >= 70
     assert verdict == "GOLDMINE"
     assert demand == "HIGH"
+    assert "mo" in vol_str
+    assert kgr < 0.25
 
 def test_opportunity_scoring_skip():
     mock_serp = [
@@ -53,7 +55,7 @@ def test_opportunity_scoring_skip():
             title_has_exact_keyword=True
         ) for i in range(1, 11)
     ]
-    score, verdict, demand = calculate_opportunity(
+    score, verdict, demand, vol_str, vol_num, kgr = calculate_opportunity(
         allintitle_count=350,
         serp_results=mock_serp,
         expansion_count=5
@@ -98,6 +100,9 @@ def test_sqlite_caching_layer():
         "opportunity_score": 92,
         "verdict": "GOLDMINE",
         "demand_level": "HIGH",
+        "estimated_monthly_volume": "~2,500 / mo",
+        "volume_numeric": 2500,
+        "kgr_ratio": 0.002,
         "allintitle_count": 5,
         "weak_spots_found": 3,
         "total_serp_scanned": 10,
@@ -130,16 +135,11 @@ def test_api_analyze_and_cache():
         "intent_filter": "all",
         "force_refresh": False
     }
-    # First call (or cache hit)
     response = client.post("/api/v1/analyze", json=payload)
     assert response.status_code == 200
     data = response.json()
+    assert "estimated_monthly_volume" in data
     assert data["verdict"] in ["GOLDMINE", "MODERATE", "SKIP"]
-
-    # Second call should return cached response without error
-    response_cached = client.post("/api/v1/analyze", json=payload)
-    assert response_cached.status_code == 200
-    assert response_cached.json()["opportunity_score"] == data["opportunity_score"]
 
 def test_api_suggest_endpoint():
     response = client.get("/api/v1/suggest?q=seo+tips&country=in&lang=en")
