@@ -99,39 +99,41 @@ export default function CompetitorTopicsTab({
               </div>
             </div>
 
-            {/* Metrics & Action */}
-            <div className="flex items-center gap-3 shrink-0 self-end sm:self-center pl-8 sm:pl-0">
-              {/* Dynamic Traffic-Light Search Volume Pill */}
-              <div
-                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md border text-xs shadow-sm transition-colors ${volStyle.pill}`}
-              >
-                <Flame className={`w-3.5 h-3.5 ${volStyle.flame}`} />
-                <span className={`font-mono font-medium ${volStyle.text}`}>
-                  {topic.search_volume}
-                </span>
-              </div>
+            {/* Metrics & Action: 3 Boxes Perfectly Aligned Horizontally in One Line */}
+            <div className="flex flex-col items-end gap-1 shrink-0 self-end sm:self-center pl-8 sm:pl-0">
+              <div className="flex items-center gap-2 sm:gap-2.5">
+                {/* 1. Dynamic Traffic-Light Search Volume Pill */}
+                <div
+                  className={`h-7 px-2.5 rounded-md border text-xs shadow-sm flex items-center gap-1.5 transition-colors ${volStyle.pill}`}
+                >
+                  <Flame className={`w-3.5 h-3.5 ${volStyle.flame}`} />
+                  <span className={`font-mono font-medium ${volStyle.text}`}>
+                    {topic.search_volume}
+                  </span>
+                </div>
 
-              {/* Dynamic Traffic-Light Competition Pill */}
-              <div className="flex flex-col items-end">
+                {/* 2. Dynamic Traffic-Light Competition Pill */}
                 <span
-                  className={`text-[10px] font-semibold px-2 py-0.5 rounded border transition-colors ${compStyle.badge}`}
+                  className={`h-7 px-2.5 rounded-md border text-xs font-semibold flex items-center shadow-sm transition-colors ${compStyle.badge}`}
                 >
                   {topic.competition_level} Competition
                 </span>
-                <span className={`text-[9px] font-mono mt-0.5 ${compStyle.subtitle}`}>
-                  {topic.kgr_status}
-                </span>
+
+                {/* 3. 1-Click Deep Scan Button */}
+                <button
+                  onClick={() => onAnalyzeTopic(topic.keyword)}
+                  className="h-7 px-2.5 text-xs font-medium text-zinc-300 hover:text-white bg-zinc-800/80 hover:bg-zinc-700/80 hover:border-white/30 rounded-md border border-zinc-700 transition-all flex items-center gap-1 cursor-pointer shrink-0 shadow-sm"
+                  title="Deep scan this competitor topic"
+                >
+                  Analyze
+                  <ArrowUpRight className="w-3.5 h-3.5 text-zinc-400" />
+                </button>
               </div>
 
-              {/* 1-Click Deep Scan Button */}
-              <button
-                onClick={() => onAnalyzeTopic(topic.keyword)}
-                className="px-2.5 py-1 text-[11px] font-medium text-zinc-300 hover:text-white bg-zinc-800/80 hover:bg-zinc-700/80 hover:border-white/30 rounded border border-zinc-700 transition-all flex items-center gap-1 cursor-pointer shrink-0 shadow-sm"
-                title="Deep scan this competitor topic"
-              >
-                Analyze
-                <ArrowUpRight className="w-3 h-3 text-zinc-400" />
-              </button>
+              {/* Subtitle Aligned Below the Row */}
+              <span className={`text-[10px] font-mono pr-1 ${compStyle.subtitle}`}>
+                {topic.kgr_status}
+              </span>
             </div>
           </div>
         );
