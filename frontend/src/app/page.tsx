@@ -183,7 +183,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#09090b] text-zinc-100 flex flex-col font-sans selection:bg-white selection:text-black relative overflow-hidden">
       {/* Interactive 3D Ambient Background */}
-      <Background3D key="bg-monochrome-white-3d" />
+      <Background3D key="bg-monochrome-stars-active" />
 
       {/* Top Navbar */}
       <header className="border-b border-white/[0.08] bg-zinc-950/40 backdrop-blur-xl sticky top-0 z-50">
