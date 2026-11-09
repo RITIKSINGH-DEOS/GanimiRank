@@ -106,9 +106,9 @@ export default function Background3D() {
         mouse.y,
         550
       );
-      gradient.addColorStop(0, "rgba(255, 255, 255, 0.055)");
-      gradient.addColorStop(0.35, "rgba(255, 255, 255, 0.02)");
-      gradient.addColorStop(0.7, "rgba(255, 255, 255, 0.006)");
+      gradient.addColorStop(0, "rgba(255, 255, 255, 0.08)");
+      gradient.addColorStop(0.35, "rgba(255, 255, 255, 0.025)");
+      gradient.addColorStop(0.7, "rgba(255, 255, 255, 0.008)");
       gradient.addColorStop(1, "rgba(0, 0, 0, 0)");
 
       ctx.fillStyle = gradient;
@@ -165,12 +165,12 @@ export default function Background3D() {
           const dist = Math.sqrt(dx * dx + dy * dy);
 
           if (dist < MAX_DIST) {
-            const lineAlpha = (1 - dist / MAX_DIST) * 0.12 * Math.min(p1.alpha, p2.alpha);
+            const lineAlpha = (1 - dist / MAX_DIST) * 0.18 * Math.min(p1.alpha, p2.alpha);
             ctx.beginPath();
             ctx.moveTo(p1.px, p1.py);
             ctx.lineTo(p2.px, p2.py);
             ctx.strokeStyle = `rgba(255, 255, 255, ${lineAlpha})`;
-            ctx.lineWidth = 0.75;
+            ctx.lineWidth = 0.85;
             ctx.stroke();
           }
         }
@@ -179,18 +179,18 @@ export default function Background3D() {
       // 4. Draw 3D Floating White Stars / Nodes
       for (let i = 0; i < projected.length; i++) {
         const item = projected[i];
-        const radius = Math.max(0.9, item.p.size * item.scale * 1.5);
+        const radius = Math.max(1.0, item.p.size * item.scale * 1.6);
 
         ctx.beginPath();
         ctx.arc(item.px, item.py, radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255, 255, 255, ${item.alpha})`;
+        ctx.fillStyle = `rgba(255, 255, 255, ${Math.min(1, item.alpha * 1.35)})`;
         ctx.fill();
 
         // Subtle gleaming halo for closer foreground stars
         if (item.scale > 0.8) {
           ctx.beginPath();
           ctx.arc(item.px, item.py, radius * 2.5, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(255, 255, 255, ${item.alpha * 0.15})`;
+          ctx.fillStyle = `rgba(255, 255, 255, ${item.alpha * 0.25})`;
           ctx.fill();
         }
       }
@@ -210,7 +210,7 @@ export default function Background3D() {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 pointer-events-none z-0 opacity-70"
+      className="fixed inset-0 pointer-events-none z-0 opacity-85"
       aria-hidden="true"
     />
   );

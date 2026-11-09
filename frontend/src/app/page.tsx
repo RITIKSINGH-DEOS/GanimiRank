@@ -183,7 +183,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#09090b] text-zinc-100 flex flex-col font-sans selection:bg-white selection:text-black relative overflow-hidden">
       {/* Interactive 3D Ambient Background */}
-      <Background3D />
+      <Background3D key="bg-monochrome-white-3d" />
 
       {/* Top Navbar */}
       <header className="border-b border-white/[0.08] bg-zinc-950/40 backdrop-blur-xl sticky top-0 z-50">
@@ -200,7 +200,7 @@ export default function Home() {
             </div>
           </div>
           <div className="flex items-center gap-4 text-xs text-zinc-400 font-mono">
-            <span className="hidden sm:inline">Guerrilla Search Engine</span>
+
             <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/[0.06] text-zinc-200 border border-white/15 text-[11px] shadow-[0_0_12px_rgba(255,255,255,0.08)]">
               <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
               Live Engines
