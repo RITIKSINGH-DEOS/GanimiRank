@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Background3D from "@/components/visuals/Background3D";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -28,9 +28,38 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<KeywordAnalyzeResponse | null>(null);
   const [activeTab, setActiveTab] = useState<"serp" | "aeo" | "content">("serp");
+  const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0, opacity: 0 });
+  const tabRefs = useRef<{ [key: string]: HTMLButtonElement | null }>({});
 
   const { copiedText, copy } = useClipboard();
   const { scanStepIndex, scanProgress, scanSteps } = useScanningPacer(loading);
+
+  useEffect(() => {
+    if (!result) return;
+    const currentTab = tabRefs.current[activeTab];
+    if (currentTab) {
+      setIndicatorStyle({
+        left: currentTab.offsetLeft,
+        width: currentTab.offsetWidth,
+        opacity: 1,
+      });
+    }
+  }, [activeTab, result]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const currentTab = tabRefs.current[activeTab];
+      if (currentTab) {
+        setIndicatorStyle({
+          left: currentTab.offsetLeft,
+          width: currentTab.offsetWidth,
+          opacity: 1,
+        });
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [activeTab]);
 
   const handleAnalyze = async (searchKw?: string) => {
     const targetKw = searchKw || keyword;
@@ -103,39 +132,52 @@ export default function Home() {
             {/* 4 Primary Dials Grid */}
             <PrimaryDials result={result} />
 
-            {/* Clean Tab Navigation Bar */}
-            <div className="flex items-center justify-between border-b border-white/[0.08] pt-2 pb-1">
-              <div className="flex items-center gap-6 text-xs font-medium">
+            {/* Clean Tab Navigation Bar with Gliding Underline */}
+            <div className="flex items-center justify-between border-b border-white/[0.08] pt-2 pb-1 relative">
+              <div className="relative flex items-center gap-6 text-xs font-medium pb-2">
                 <button
+                  ref={(el) => {
+                    tabRefs.current["serp"] = el;
+                  }}
                   onClick={() => setActiveTab("serp")}
-                  className={`pb-2 transition-colors relative cursor-pointer ${
-                    activeTab === "serp"
-                      ? "text-white font-semibold after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-white"
-                      : "text-zinc-500 hover:text-zinc-300"
+                  className={`transition-colors cursor-pointer py-0.5 ${
+                    activeTab === "serp" ? "text-white font-semibold" : "text-zinc-500 hover:text-zinc-300"
                   }`}
                 >
                   Competitor Titles ({result.competitor_topics?.length || 10})
                 </button>
                 <button
+                  ref={(el) => {
+                    tabRefs.current["aeo"] = el;
+                  }}
                   onClick={() => setActiveTab("aeo")}
-                  className={`pb-2 transition-colors relative cursor-pointer ${
-                    activeTab === "aeo"
-                      ? "text-white font-semibold after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-white"
-                      : "text-zinc-500 hover:text-zinc-300"
+                  className={`transition-colors cursor-pointer py-0.5 ${
+                    activeTab === "aeo" ? "text-white font-semibold" : "text-zinc-500 hover:text-zinc-300"
                   }`}
                 >
                   AI Overviews & GEO ({result.aeo_geo.aeo_potential_score}%)
                 </button>
                 <button
+                  ref={(el) => {
+                    tabRefs.current["content"] = el;
+                  }}
                   onClick={() => setActiveTab("content")}
-                  className={`pb-2 transition-colors relative cursor-pointer ${
-                    activeTab === "content"
-                      ? "text-white font-semibold after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-white"
-                      : "text-zinc-500 hover:text-zinc-300"
+                  className={`transition-colors cursor-pointer py-0.5 ${
+                    activeTab === "content" ? "text-white font-semibold" : "text-zinc-500 hover:text-zinc-300"
                   }`}
                 >
                   Titles & Subheadings ({result.high_ctr_titles.length})
                 </button>
+
+                {/* Gliding Underline Bar (Zero Jumping, Silky Smooth Ease) */}
+                <div
+                  className="absolute bottom-0 h-0.5 bg-white rounded-full transition-all duration-300 ease-out shadow-[0_0_10px_rgba(255,255,255,0.85)] pointer-events-none"
+                  style={{
+                    transform: `translateX(${indicatorStyle.left}px)`,
+                    width: `${indicatorStyle.width}px`,
+                    opacity: indicatorStyle.opacity,
+                  }}
+                />
               </div>
 
               {/* Minimal CSV Export Action */}
@@ -148,29 +190,32 @@ export default function Home() {
               </button>
             </div>
 
-            {/* TAB 1: Competing Titles & Topics */}
-            {activeTab === "serp" && (
-              <CompetitorTopicsTab
-                topics={result.competitor_topics}
-                onAnalyzeTopic={(topicKeyword) => {
-                  setKeyword(topicKeyword);
-                  handleAnalyze(topicKeyword);
-                }}
-              />
-            )}
+            {/* Smooth Tab Content Pane (Fade + Soft Slide Enter, Zero Layout Jump) */}
+            <div key={activeTab} className="animate-tab-enter">
+              {/* TAB 1: Competing Titles & Topics */}
+              {activeTab === "serp" && (
+                <CompetitorTopicsTab
+                  topics={result.competitor_topics}
+                  onAnalyzeTopic={(topicKeyword) => {
+                    setKeyword(topicKeyword);
+                    handleAnalyze(topicKeyword);
+                  }}
+                />
+              )}
 
-            {/* TAB 2: AI Overviews & GEO Blueprint */}
-            {activeTab === "aeo" && <AeoGeoTab aeoGeo={result.aeo_geo} />}
+              {/* TAB 2: AI Overviews & GEO Blueprint */}
+              {activeTab === "aeo" && <AeoGeoTab aeoGeo={result.aeo_geo} />}
 
-            {/* TAB 3: Titles & Subheadings Generator */}
-            {activeTab === "content" && (
-              <ContentFormulasTab
-                highCtrTitles={result.high_ctr_titles}
-                peopleAlsoAsk={result.people_also_ask}
-                onCopy={copy}
-                copiedText={copiedText}
-              />
-            )}
+              {/* TAB 3: Titles & Subheadings Generator */}
+              {activeTab === "content" && (
+                <ContentFormulasTab
+                  highCtrTitles={result.high_ctr_titles}
+                  peopleAlsoAsk={result.people_also_ask}
+                  onCopy={copy}
+                  copiedText={copiedText}
+                />
+              )}
+            </div>
           </div>
         )}
       </main>
