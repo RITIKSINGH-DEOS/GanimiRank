@@ -97,13 +97,33 @@ export default function Home() {
   ];
 
   const [scanStepIndex, setScanStepIndex] = useState(0);
+  const [scanProgress, setScanProgress] = useState(15);
 
   useEffect(() => {
-    if (!loading) return;
-    const interval = setInterval(() => {
+    if (!loading) {
+      setScanProgress(15);
+      setScanStepIndex(0);
+      return;
+    }
+
+    // Calm, readable step pacing (1.4s per step)
+    const stepInterval = setInterval(() => {
       setScanStepIndex((prev) => (prev + 1) % SCAN_STEPS.length);
-    }, 750);
-    return () => clearInterval(interval);
+    }, 1400);
+
+    // Continuous, silky smooth progress interpolation
+    const progressInterval = setInterval(() => {
+      setScanProgress((prev) => {
+        if (prev >= 92) return prev;
+        const next = prev + Math.floor(Math.random() * 5) + 3;
+        return next > 92 ? 92 : next;
+      });
+    }, 280);
+
+    return () => {
+      clearInterval(stepInterval);
+      clearInterval(progressInterval);
+    };
   }, [loading, SCAN_STEPS.length]);
 
   const handleCopy = (text: string) => {
@@ -403,23 +423,27 @@ export default function Home() {
             {/* Live Radar Status Card */}
             <div className="glass-panel rounded-2xl p-6 sm:p-7 flex flex-col sm:flex-row items-center gap-6 justify-between border-white/20 relative overflow-hidden shadow-2xl">
               {/* Left: Concentric Radar Animation & Status */}
-              <div className="flex items-center gap-4.5 z-10">
-                <div className="relative w-13 h-13 rounded-2xl bg-white/[0.08] border border-white/25 flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(255,255,255,0.15)]">
-                  <div className="absolute inset-0 rounded-2xl border border-white/40 animate-radar-pulse" />
-                  <div className="absolute -inset-1.5 rounded-2xl border border-white/20 animate-ping opacity-30" />
-                  <Zap className="w-6 h-6 text-white animate-pulse fill-white" />
+              <div className="flex items-center gap-4.5 z-10 min-w-0">
+                <div className="relative w-12 h-12 rounded-2xl bg-white/[0.08] border border-white/20 flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(255,255,255,0.12)]">
+                  <div className="absolute inset-0 rounded-2xl border border-white/30 animate-gentle-pulse" />
+                  <Zap className="w-5 h-5 text-white animate-pulse fill-white" />
                 </div>
-                <div className="space-y-1 text-center sm:text-left">
+                <div className="space-y-1 text-center sm:text-left min-w-0 flex-1">
                   <div className="flex items-center justify-center sm:justify-start gap-2">
-                    <span className="w-2 h-2 rounded-full bg-white animate-ping" />
-                    <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-300">
+                    <span className="w-2 h-2 rounded-full bg-white animate-pulse shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
+                    <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">
                       Live Search Engine Audit
                     </span>
                   </div>
-                  <h3 className="text-sm sm:text-base font-semibold text-white tracking-tight">
-                    {SCAN_STEPS[scanStepIndex]}
-                  </h3>
-                  <p className="text-xs text-zinc-400 font-mono">
+                  <div className="h-6 sm:h-7 flex items-center overflow-hidden">
+                    <span
+                      key={scanStepIndex}
+                      className="text-xs sm:text-sm font-semibold text-white tracking-tight animate-fade-in line-clamp-1"
+                    >
+                      {SCAN_STEPS[scanStepIndex]}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-zinc-500 font-mono">
                     Target: &ldquo;{keyword}&rdquo; • Country: {country.toUpperCase()}
                   </p>
                 </div>
@@ -428,13 +452,13 @@ export default function Home() {
               {/* Right: Live Progress Bar & Counter */}
               <div className="w-full sm:w-56 shrink-0 space-y-2 z-10 text-xs">
                 <div className="flex justify-between font-mono text-zinc-400 text-[11px]">
-                  <span>Processing Nodes</span>
-                  <span className="text-white font-semibold">Step {scanStepIndex + 1}/5</span>
+                  <span>Auditing SERP Nodes</span>
+                  <span className="text-white font-semibold">{scanProgress}%</span>
                 </div>
                 <div className="w-full h-1.5 rounded-full bg-zinc-800/80 overflow-hidden">
                   <div
-                    className="h-full bg-white rounded-full transition-all duration-300 shadow-[0_0_12px_rgba(255,255,255,0.9)]"
-                    style={{ width: `${((scanStepIndex + 1) / SCAN_STEPS.length) * 100}%` }}
+                    className="h-full bg-white rounded-full transition-all duration-500 ease-out shadow-[0_0_10px_rgba(255,255,255,0.8)]"
+                    style={{ width: `${scanProgress}%` }}
                   />
                 </div>
               </div>
