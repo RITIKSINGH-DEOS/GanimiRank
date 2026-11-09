@@ -10,7 +10,6 @@ interface Point3D {
   baseY: number;
   baseZ: number;
   phase: number;
-  size: number;
   speed: number;
 }
 
@@ -28,7 +27,7 @@ export default function Background3D() {
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
 
-    // Mouse coordinates & lerped coordinates for silky smooth tracking
+    // Mouse coordinates with silky smooth damping (lerp)
     const mouse = {
       x: width / 2,
       y: height / 2,
@@ -49,16 +48,16 @@ export default function Background3D() {
     const handleMouseMove = (e: MouseEvent) => {
       mouse.targetX = e.clientX;
       mouse.targetY = e.clientY;
-      // Parallax 3D camera tilt angles (-0.28 to +0.28 radians)
-      mouse.targetRotY = ((e.clientX - width / 2) / (width / 2)) * 0.28;
-      mouse.targetRotX = -((e.clientY - height / 2) / (height / 2)) * 0.28;
+      // Gentle parallax 3D camera tilt (-0.18 to +0.18 radians)
+      mouse.targetRotY = ((e.clientX - width / 2) / (width / 2)) * 0.18;
+      mouse.targetRotX = -((e.clientY - height / 2) / (height / 2)) * 0.18;
     };
 
     window.addEventListener("resize", handleResize);
     window.addEventListener("mousemove", handleMouseMove);
 
-    // Full-screen expansive 3D particle constellation (Pure Monochrome)
-    const NUM_POINTS = 160;
+    // Balanced 3D Constellation (Subtle, fine, non-distracting)
+    const NUM_POINTS = 110;
     const points: Point3D[] = [];
 
     const SPAN_X = Math.max(width * 1.1, 1400);
@@ -78,8 +77,7 @@ export default function Background3D() {
         baseY: y,
         baseZ: z,
         phase: Math.random() * Math.PI * 2,
-        size: Math.random() * 1.8 + 0.8,
-        speed: Math.random() * 0.4 + 0.6,
+        speed: Math.random() * 0.3 + 0.4,
       });
     }
 
@@ -87,49 +85,48 @@ export default function Background3D() {
     let time = 0;
 
     const render = () => {
-      time += 0.006;
+      time += 0.005;
 
-      // Smooth damping (lerp) towards cursor position
-      mouse.x += (mouse.targetX - mouse.x) * 0.06;
-      mouse.y += (mouse.targetY - mouse.y) * 0.06;
-      mouse.rotX += (mouse.targetRotX - mouse.rotX) * 0.04;
-      mouse.rotY += (mouse.targetRotY - mouse.rotY) * 0.04;
+      // Smooth damping (lerp) towards cursor
+      mouse.x += (mouse.targetX - mouse.x) * 0.05;
+      mouse.y += (mouse.targetY - mouse.y) * 0.05;
+      mouse.rotX += (mouse.targetRotX - mouse.rotX) * 0.035;
+      mouse.rotY += (mouse.targetRotY - mouse.rotY) * 0.035;
 
       ctx.clearRect(0, 0, width, height);
 
-      // 1. Ambient Pure White/Monochrome Cursor Spotlight
+      // 1. Ultra-Subtle Ambient Cursor Spotlight (Calm Monochrome Whisper)
       const gradient = ctx.createRadialGradient(
         mouse.x,
         mouse.y,
         0,
         mouse.x,
         mouse.y,
-        550
+        500
       );
-      gradient.addColorStop(0, "rgba(255, 255, 255, 0.055)");
-      gradient.addColorStop(0.35, "rgba(255, 255, 255, 0.02)");
-      gradient.addColorStop(0.7, "rgba(255, 255, 255, 0.006)");
+      gradient.addColorStop(0, "rgba(255, 255, 255, 0.035)");
+      gradient.addColorStop(0.4, "rgba(255, 255, 255, 0.01)");
       gradient.addColorStop(1, "rgba(0, 0, 0, 0)");
 
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, width, height);
 
-      // 2. 3D Camera Rotation Matrix (Monochrome Parallax)
-      const cosY = Math.cos(mouse.rotY + time * 0.12);
-      const sinY = Math.sin(mouse.rotY + time * 0.12);
-      const cosX = Math.cos(mouse.rotX + Math.sin(time * 0.2) * 0.06);
-      const sinX = Math.sin(mouse.rotX + Math.sin(time * 0.2) * 0.06);
+      // 2. 3D Camera Rotation Matrix
+      const cosY = Math.cos(mouse.rotY + time * 0.1);
+      const sinY = Math.sin(mouse.rotY + time * 0.1);
+      const cosX = Math.cos(mouse.rotX + Math.sin(time * 0.15) * 0.04);
+      const sinX = Math.sin(mouse.rotX + Math.sin(time * 0.15) * 0.04);
 
-      const projected: { px: number; py: number; scale: number; p: Point3D; alpha: number }[] = [];
+      const projected: { px: number; py: number; scale: number; alpha: number }[] = [];
 
       // Transform and Project each 3D point
       for (let i = 0; i < points.length; i++) {
         const p = points[i];
 
-        // Gentle floating wave motion
-        const curX = p.baseX + Math.sin(time * p.speed + p.phase) * 18;
-        const curY = p.baseY + Math.cos(time * p.speed + p.phase) * 18;
-        const curZ = p.baseZ + Math.sin(time * 0.5 + p.phase) * 25;
+        // Soft, calming floating motion
+        const curX = p.baseX + Math.sin(time * p.speed + p.phase) * 12;
+        const curY = p.baseY + Math.cos(time * p.speed + p.phase) * 12;
+        const curZ = p.baseZ + Math.sin(time * 0.4 + p.phase) * 16;
 
         // Rotate Y (yaw)
         const x1 = curX * cosY - curZ * sinY;
@@ -147,14 +144,14 @@ export default function Background3D() {
         const px = width / 2 + x1 * scale;
         const py = height / 2 + y2 * scale;
 
-        // Depth alpha calculation
-        const depthAlpha = Math.min(0.65, Math.max(0.08, scale * 0.9));
+        // Soft, balanced depth alpha (0.08 to 0.35 max)
+        const depthAlpha = Math.min(0.35, Math.max(0.06, scale * 0.4));
 
-        projected.push({ px, py, scale, p, alpha: depthAlpha });
+        projected.push({ px, py, scale, alpha: depthAlpha });
       }
 
-      // 3. Draw 3D Geometric Connecting Lines (Pure White / Silver Mesh)
-      const MAX_DIST = 115;
+      // 3. Delicate, Hair-Thin Connecting Lines
+      const MAX_DIST = 100;
       for (let i = 0; i < projected.length; i++) {
         for (let j = i + 1; j < projected.length; j++) {
           const p1 = projected[i];
@@ -165,34 +162,27 @@ export default function Background3D() {
           const dist = Math.sqrt(dx * dx + dy * dy);
 
           if (dist < MAX_DIST) {
-            const lineAlpha = (1 - dist / MAX_DIST) * 0.12 * Math.min(p1.alpha, p2.alpha);
+            const lineAlpha = (1 - dist / MAX_DIST) * 0.05 * Math.min(p1.alpha, p2.alpha);
             ctx.beginPath();
             ctx.moveTo(p1.px, p1.py);
             ctx.lineTo(p2.px, p2.py);
             ctx.strokeStyle = `rgba(255, 255, 255, ${lineAlpha})`;
-            ctx.lineWidth = 0.75;
+            ctx.lineWidth = 0.5;
             ctx.stroke();
           }
         }
       }
 
-      // 4. Draw 3D Floating White Stars / Nodes
+      // 4. Subtle, Tiny Starlight Nodes (No Giant Discs!)
       for (let i = 0; i < projected.length; i++) {
         const item = projected[i];
-        const radius = Math.max(0.9, item.p.size * item.scale * 1.5);
+        // Capped at 1.4px maximum so no irritating big balls appear
+        const radius = Math.min(1.4, Math.max(0.6, item.scale * 1.1));
 
         ctx.beginPath();
         ctx.arc(item.px, item.py, radius, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(255, 255, 255, ${item.alpha})`;
         ctx.fill();
-
-        // Subtle gleaming halo for closer foreground stars
-        if (item.scale > 0.8) {
-          ctx.beginPath();
-          ctx.arc(item.px, item.py, radius * 2.5, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(255, 255, 255, ${item.alpha * 0.15})`;
-          ctx.fill();
-        }
       }
 
       animationFrameId = requestAnimationFrame(render);
@@ -210,7 +200,7 @@ export default function Background3D() {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 pointer-events-none z-0 opacity-70"
+      className="fixed inset-0 pointer-events-none z-0 opacity-30"
       aria-hidden="true"
     />
   );
