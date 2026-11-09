@@ -12,6 +12,7 @@ class KeywordAnalyzeRequest(BaseModel):
     language: str = Field(default="en", description="Language code e.g. en, hi")
     local_geo: Optional[str] = Field(default=None, description="Optional local city target e.g. Lucknow")
     intent_filter: Optional[str] = Field(default="all", description="all, informational, commercial, question")
+    force_refresh: Optional[bool] = Field(default=False, description="Bypass local cache and re-scan live")
 
 class SERPResultItem(BaseModel):
     position: int

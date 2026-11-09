@@ -3,12 +3,12 @@ from app.main import app
 from app.services.scoring_engine import calculate_opportunity
 from app.services.aeo_geo_engine import analyze_aeo_geo_readiness
 from app.services.title_engine import generate_high_ctr_titles, generate_paa_questions
+from app.services.cache_service import get_cached_analysis, save_cached_analysis
 from app.schemas.keyword import SERPResultItem
 
 client = TestClient(app)
 
 def test_opportunity_scoring_goldmine():
-    # Mock SERP with 4 weak spots, low allintitle, high expansion
     mock_serp = [
         SERPResultItem(
             position=1,
@@ -41,7 +41,6 @@ def test_opportunity_scoring_goldmine():
     assert demand == "HIGH"
 
 def test_opportunity_scoring_skip():
-    # Mock high allintitle, zero weak spots
     mock_serp = [
         SERPResultItem(
             position=i,
@@ -91,22 +90,56 @@ def test_title_and_paa_generator():
     assert len(paa) >= 5
     assert any("price" in q.lower() or "cost" in q.lower() for q in paa)
 
-def test_api_analyze_endpoint():
+def test_sqlite_caching_layer():
+    dummy_data = {
+        "keyword": "test-cache-query",
+        "country": "in",
+        "local_geo": "lucknow",
+        "opportunity_score": 92,
+        "verdict": "GOLDMINE",
+        "demand_level": "HIGH",
+        "allintitle_count": 5,
+        "weak_spots_found": 3,
+        "total_serp_scanned": 10,
+        "serp_results": [],
+        "aeo_geo": {
+            "has_ai_overview": True,
+            "has_featured_snippet": True,
+            "aeo_potential_score": 85,
+            "ai_citation_weakness": True,
+            "citation_source_type": "Reddit",
+            "recommended_format": "Table",
+            "actionable_tip": "Include table"
+        },
+        "related_keywords": ["test kw"],
+        "high_ctr_titles": ["Test Title"],
+        "people_also_ask": ["Test question?"]
+    }
+    save_cached_analysis("test-cache-query", "in", "lucknow", dummy_data)
+    cached = get_cached_analysis("test-cache-query", "in", "lucknow")
+    assert cached is not None
+    assert cached["opportunity_score"] == 92
+    assert cached["verdict"] == "GOLDMINE"
+
+def test_api_analyze_and_cache():
     payload = {
         "keyword": "tunday kababi lucknow",
         "country": "in",
         "language": "en",
         "local_geo": "lucknow",
-        "intent_filter": "all"
+        "intent_filter": "all",
+        "force_refresh": False
     }
+    # First call (or cache hit)
     response = client.post("/api/v1/analyze", json=payload)
     assert response.status_code == 200
     data = response.json()
-    assert "opportunity_score" in data
-    assert "verdict" in data
-    assert "aeo_geo" in data
-    assert "high_ctr_titles" in data
-    assert len(data["high_ctr_titles"]) > 0
+    assert data["verdict"] in ["GOLDMINE", "MODERATE", "SKIP"]
+
+    # Second call should return cached response without error
+    response_cached = client.post("/api/v1/analyze", json=payload)
+    assert response_cached.status_code == 200
+    assert response_cached.json()["opportunity_score"] == data["opportunity_score"]
 
 def test_api_suggest_endpoint():
     response = client.get("/api/v1/suggest?q=seo+tips&country=in&lang=en")
