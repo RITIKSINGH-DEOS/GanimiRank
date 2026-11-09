@@ -24,6 +24,17 @@ class SERPResultItem(BaseModel):
     weak_spot_type: Optional[str] = None # reddit, quora, forum, unoptimized_title, directory
     title_has_exact_keyword: bool
 
+class CompetitorTopicItem(BaseModel):
+    position: int
+    title: str
+    keyword: str
+    search_volume: str # e.g. "~14,500 / mo"
+    volume_numeric: int # 14500
+    competition_level: str # Low, Medium, High
+    competition_score: int # 0 to 100
+    kgr_status: str # e.g. "KGR < 0.25 (Easy Rank)", "Moderate Supply", "High Authority Battle"
+    intent: str # Informational, Commercial, Local Guide
+
 class AeoGeoAnalysis(BaseModel):
     has_ai_overview: bool
     has_featured_snippet: bool
@@ -46,8 +57,9 @@ class KeywordAnalyzeResponse(BaseModel):
     allintitle_count: int
     weak_spots_found: int
     total_serp_scanned: int
-    serp_results: List[SERPResultItem]
+    serp_results: List[SERPResultItem] = []
+    competitor_topics: List[CompetitorTopicItem] = []
     aeo_geo: AeoGeoAnalysis
-    related_keywords: List[str]
-    high_ctr_titles: List[str]
-    people_also_ask: List[str]
+    related_keywords: List[str] = []
+    high_ctr_titles: List[str] = []
+    people_also_ask: List[str] = []

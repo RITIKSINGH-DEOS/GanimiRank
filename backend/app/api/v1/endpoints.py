@@ -7,6 +7,7 @@ from app.schemas.keyword import (
 )
 from app.services.expansion_engine import expand_keywords, fetch_google_suggestions
 from app.services.serp_engine import extract_allintitle_count, scrape_top_serp
+from app.services.competitor_engine import generate_competitor_topics
 from app.services.aeo_geo_engine import analyze_aeo_geo_readiness
 from app.services.scoring_engine import calculate_opportunity
 from app.services.title_engine import generate_high_ctr_titles, generate_paa_questions
@@ -35,6 +36,7 @@ def analyze_keyword(payload: KeywordAnalyzeRequest):
     - Autocomplete Expansion
     - Real-Time Allintitle extraction (KGR)
     - Top 10 SERP Audit & Weak Spot Identification
+    - Competing Topics & Related Titles with Volume & Competition
     - AEO & GEO Readiness Score
     - Deterministic Opportunity Score (0-100), Search Volume & Verdict
     - High-CTR Title & PAA Headings Generation
@@ -44,7 +46,9 @@ def analyze_keyword(payload: KeywordAnalyzeRequest):
         if not payload.force_refresh:
             cached = get_cached_analysis(payload.keyword, payload.country, payload.local_geo)
             if cached:
-                return KeywordAnalyzeResponse(**cached)
+                # If cached version doesn't have competitor_topics, re-run
+                if "competitor_topics" in cached and cached["competitor_topics"]:
+                    return KeywordAnalyzeResponse(**cached)
 
         # 1. Expand keyword universe
         expanded = expand_keywords(
@@ -67,20 +71,27 @@ def analyze_keyword(payload: KeywordAnalyzeRequest):
             country=payload.country
         )
         
-        # 4. AEO & GEO Readiness analysis
+        # 4. Generate Competing Topics with Search Volume & Competition Difficulty
+        competitor_topics = generate_competitor_topics(
+            seed=payload.keyword,
+            local_geo=payload.local_geo,
+            country=payload.country
+        )
+        
+        # 5. AEO & GEO Readiness analysis
         aeo_geo = analyze_aeo_geo_readiness(
             keyword=payload.keyword,
             serp_results=serp_results
         )
         
-        # 5. Opportunity Scoring, Search Volume & Verdict
+        # 6. Opportunity Scoring, Search Volume & Verdict
         opp_score, verdict, demand_level, volume_str, volume_num, kgr_val = calculate_opportunity(
             allintitle_count=allintitle_count,
             serp_results=serp_results,
             expansion_count=len(expanded)
         )
         
-        # 6. Title and PAA generation
+        # 7. Title and PAA generation
         titles = generate_high_ctr_titles(payload.keyword, payload.local_geo)
         paa = generate_paa_questions(payload.keyword, payload.local_geo)
         
@@ -98,6 +109,7 @@ def analyze_keyword(payload: KeywordAnalyzeRequest):
             weak_spots_found=sum(1 for s in serp_results if s.is_weak_spot),
             total_serp_scanned=len(serp_results),
             serp_results=serp_results,
+            competitor_topics=competitor_topics,
             aeo_geo=aeo_geo,
             related_keywords=expanded[:25],
             high_ctr_titles=titles,
@@ -113,5 +125,9 @@ def analyze_keyword(payload: KeywordAnalyzeRequest):
         )
         
         return response_data
+        
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Analysis pipeline error: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Analysis engine failure: {str(e)}"
+        )

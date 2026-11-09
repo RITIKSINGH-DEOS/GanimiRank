@@ -34,6 +34,18 @@ interface SERPResultItem {
   title_has_exact_keyword: boolean;
 }
 
+interface CompetitorTopicItem {
+  position: number;
+  title: string;
+  keyword: string;
+  search_volume: string;
+  volume_numeric: number;
+  competition_level: "Low" | "Medium" | "High";
+  competition_score: number;
+  kgr_status: string;
+  intent: string;
+}
+
 interface AeoGeoAnalysis {
   has_ai_overview: boolean;
   has_featured_snippet: boolean;
@@ -58,6 +70,7 @@ interface KeywordAnalyzeResponse {
   weak_spots_found: number;
   total_serp_scanned: number;
   serp_results: SERPResultItem[];
+  competitor_topics?: CompetitorTopicItem[];
   aeo_geo: AeoGeoAnalysis;
   related_keywords: string[];
   high_ctr_titles: string[];
@@ -73,6 +86,7 @@ export default function Home() {
   const [result, setResult] = useState<KeywordAnalyzeResponse | null>(null);
   const [activeTab, setActiveTab] = useState<"serp" | "aeo" | "content">("serp");
   const [copiedText, setCopiedText] = useState<string | null>(null);
+  const [showSerpAudit, setShowSerpAudit] = useState(false);
 
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -127,7 +141,18 @@ export default function Home() {
       ["SERP Weak Spots", result.weak_spots_found.toString()],
       ["AEO Potential", `${result.aeo_geo.aeo_potential_score}%`],
       [],
-      ["Top Competitors"],
+      ["Competing Topics & Titles"],
+      ["Rank", "Title", "Keyword", "Search Volume", "Competition Level", "Intent"],
+      ...(result.competitor_topics || []).map((t) => [
+        t.position.toString(),
+        `"${t.title.replace(/"/g, '""')}"`,
+        `"${t.keyword.replace(/"/g, '""')}"`,
+        t.search_volume,
+        t.competition_level,
+        t.intent
+      ]),
+      [],
+      ["Top SERP Pages Scanned"],
       ["Rank", "Domain", "Title", "Weak Spot?", "Type", "URL"],
       ...result.serp_results.map((s) => [
         s.position.toString(),
@@ -158,167 +183,175 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#09090b] text-zinc-100 flex flex-col font-sans selection:bg-zinc-800 selection:text-white">
       {/* Top Navbar */}
-      <header className="border-b border-zinc-800/60 bg-[#09090b]/80 backdrop-blur-md sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-zinc-100 text-zinc-950 flex items-center justify-center font-black text-sm shadow-sm">
-              G
+      <header className="border-b border-zinc-800/80 bg-zinc-950/50 backdrop-blur-md sticky top-0 z-50">
+        <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-7 h-7 rounded-lg bg-white flex items-center justify-center shadow-[0_0_15px_rgba(255,255,255,0.15)]">
+              <Zap className="w-4 h-4 text-black fill-black" />
             </div>
             <div className="flex items-center gap-2">
-              <span className="font-semibold text-sm tracking-tight text-white">GanimiRank</span>
-              <span className="text-[11px] text-zinc-500 font-mono">v1.3</span>
+              <span className="font-semibold tracking-tight text-white text-base">GanimiRank</span>
+              <span className="text-[10px] font-mono tracking-widest uppercase bg-zinc-800/80 text-zinc-400 px-1.5 py-0.5 rounded border border-zinc-700/50">
+                v1.5.0
+              </span>
             </div>
           </div>
-
-          <div className="flex items-center gap-3 text-xs text-zinc-400">
-            <span className="flex items-center gap-1.5 font-medium">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" />
-              Engine Online
+          <div className="flex items-center gap-4 text-xs text-zinc-400 font-mono">
+            <span className="hidden sm:inline">Guerrilla Search Engine</span>
+            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[11px]">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              Live Engines
             </span>
           </div>
         </div>
       </header>
 
-      {/* Main Content Area */}
-      <main className="flex-1 max-w-6xl mx-auto px-4 sm:px-6 py-10 w-full space-y-8">
-        {/* Simple, Confident Hero */}
-        <div className="text-center max-w-2xl mx-auto space-y-2">
-          <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-zinc-100">
-            Keyword & SERP Intelligence
-          </h1>
-          <p className="text-xs sm:text-sm text-zinc-400">
-            Check real search demand, competitor weak spots, and AI citation readiness.
-          </p>
-        </div>
-
-        {/* Minimalist Command Search Bar */}
-        <div className="max-w-3xl mx-auto">
-          <div className="p-1.5 bg-zinc-900/90 border border-zinc-800 rounded-2xl shadow-xl flex flex-col sm:flex-row items-center gap-2">
-            {/* Input */}
-            <div className="relative flex-1 w-full">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+      {/* Main Workspace */}
+      <main className="flex-1 max-w-6xl w-full mx-auto px-4 py-8 space-y-6">
+        {/* Search Command Bar */}
+        <section className="space-y-3">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleAnalyze();
+            }}
+            className="flex flex-col sm:flex-row gap-2 bg-zinc-900/60 p-1.5 rounded-xl border border-zinc-800/80 shadow-2xl backdrop-blur-xl focus-within:border-zinc-700 transition-colors"
+          >
+            <div className="flex-1 flex items-center gap-2.5 px-3 min-h-[44px]">
+              <Search className="w-4 h-4 text-zinc-500 shrink-0" />
               <input
                 type="text"
-                placeholder="Enter topic (e.g. 'best cafe in lucknow', 'python vs mojo')..."
                 value={keyword}
                 onChange={(e) => setKeyword(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleAnalyze()}
-                className="w-full pl-10 pr-3 py-2.5 bg-transparent text-sm text-white placeholder-zinc-500 focus:outline-none font-medium"
+                placeholder="Target keyword (e.g., Top 5 Best Cafe in Lucknow)..."
+                className="w-full bg-transparent text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-none"
               />
             </div>
 
-            {/* Selects */}
-            <div className="flex items-center gap-2 w-full sm:w-auto px-1 sm:px-0">
-              <div className="relative flex-1 sm:flex-initial">
+            <div className="flex items-center gap-2 shrink-0 px-2 sm:px-0">
+              <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-zinc-950/60 border border-zinc-800 text-xs text-zinc-400">
+                <Globe className="w-3.5 h-3.5 text-zinc-500" />
                 <select
                   value={country}
                   onChange={(e) => setCountry(e.target.value)}
-                  className="w-full sm:w-auto px-3 py-2 bg-zinc-950/80 border border-zinc-800/80 rounded-xl text-xs text-zinc-300 focus:outline-none cursor-pointer"
+                  className="bg-transparent text-zinc-300 focus:outline-none cursor-pointer"
                 >
                   <option value="in">India (IN)</option>
                   <option value="us">United States (US)</option>
                   <option value="uk">United Kingdom (UK)</option>
-                  <option value="worldwide">Global</option>
+                  <option value="ca">Canada (CA)</option>
                 </select>
               </div>
 
-              <div className="relative flex-1 sm:flex-initial">
+              <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-zinc-950/60 border border-zinc-800 text-xs text-zinc-400">
+                <MapPin className="w-3.5 h-3.5 text-zinc-500" />
                 <input
                   type="text"
-                  placeholder="City (optional)"
                   value={localGeo}
                   onChange={(e) => setLocalGeo(e.target.value)}
-                  className="w-full sm:w-28 px-3 py-2 bg-zinc-950/80 border border-zinc-800/80 rounded-xl text-xs text-zinc-300 placeholder-zinc-600 focus:outline-none"
+                  placeholder="Local Geo (optional)"
+                  className="w-24 sm:w-28 bg-transparent text-zinc-300 placeholder:text-zinc-600 focus:outline-none"
                 />
               </div>
 
-              {/* Submit Button */}
               <button
-                onClick={() => handleAnalyze()}
+                type="submit"
                 disabled={loading || !keyword.trim()}
-                className="px-4 py-2 bg-zinc-100 hover:bg-white text-zinc-950 font-semibold text-xs rounded-xl shadow transition-all flex items-center justify-center gap-1.5 shrink-0 disabled:opacity-40 cursor-pointer"
+                className="w-full sm:w-auto px-5 py-2 rounded-lg bg-white text-black font-semibold text-xs tracking-tight hover:bg-zinc-200 active:scale-[0.98] transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer shadow-sm"
               >
                 {loading ? (
                   <>
-                    <span className="w-3.5 h-3.5 border-2 border-zinc-950 border-t-transparent rounded-full animate-spin" />
-                    Analyzing
+                    <span className="w-3.5 h-3.5 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                    Scanning...
                   </>
                 ) : (
                   <>
-                    <Zap className="w-3.5 h-3.5 fill-zinc-950" />
+                    <Zap className="w-3.5 h-3.5 fill-black" />
                     Analyze
                   </>
                 )}
               </button>
             </div>
-          </div>
+          </form>
 
-          {/* Quick Examples */}
-          <div className="flex items-center justify-center gap-2 text-[11px] text-zinc-500 mt-3 flex-wrap">
-            <span>Examples:</span>
-            {[
-              { label: "Best Cafe in Lucknow", kw: "best cafe in lucknow", geo: "Lucknow" },
-              { label: "Tunday Kababi", kw: "tunday kababi lucknow", geo: "Lucknow" },
-              { label: "Python vs Mojo", kw: "python vs mojo programming", geo: "" },
-              { label: "SIP vs Mutual Fund", kw: "sip vs mutual fund", geo: "" }
-            ].map((s) => (
+          {/* Quick Presets */}
+          <div className="flex items-center gap-2 text-xs text-zinc-500 px-1 overflow-x-auto">
+            <span className="shrink-0 text-zinc-600">Quick test:</span>
+            {["Top 5 Best Cafe in Lucknow", "tunday kababi lucknow", "best street food in hazratganj", "top 5 upcoming tata electric cars in 2027"].map((preset) => (
               <button
-                key={s.label}
+                key={preset}
+                type="button"
                 onClick={() => {
-                  setKeyword(s.kw);
-                  setLocalGeo(s.geo);
-                  handleAnalyze(s.kw);
+                  setKeyword(preset);
+                  handleAnalyze(preset);
                 }}
-                className="text-zinc-400 hover:text-zinc-200 underline underline-offset-4 decoration-zinc-800 transition-colors cursor-pointer"
+                className="shrink-0 px-2.5 py-1 rounded-md bg-zinc-900/40 hover:bg-zinc-800/60 text-zinc-400 hover:text-zinc-200 border border-zinc-800/50 transition-colors cursor-pointer text-[11px]"
               >
-                {s.label}
+                {preset}
               </button>
             ))}
           </div>
-        </div>
+        </section>
 
-        {/* Error notification */}
         {error && (
-          <div className="max-w-3xl mx-auto p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs flex items-center gap-2">
+          <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs flex items-center gap-3">
             <AlertTriangle className="w-4 h-4 shrink-0" />
             <span>{error}</span>
           </div>
         )}
 
-        {/* Results Screen */}
+        {/* Results Console */}
         {result && (
-          <div className="space-y-6 pt-2">
-            {/* 4 Clean Metric Cards */}
+          <div className="space-y-6">
+            {/* 4 Primary Dials Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
-              {/* Card 1: Ranking Opportunity */}
+              {/* Card 1: Guerrilla Opportunity Score */}
               <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800/80 space-y-3 flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-medium text-zinc-400">Ranking Potential</span>
+                    <span className="text-[11px] font-medium text-zinc-400">Guerrilla Verdict</span>
                     <span
-                      className={`text-[10px] font-bold px-2 py-0.5 rounded-md ${
+                      className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider ${
                         result.verdict === "GOLDMINE"
-                          ? "bg-emerald-500/10 text-emerald-400"
+                          ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
                           : result.verdict === "MODERATE"
-                          ? "bg-amber-500/10 text-amber-400"
-                          : "bg-rose-500/10 text-rose-400"
+                          ? "bg-amber-500/15 text-amber-400 border border-amber-500/30"
+                          : "bg-rose-500/15 text-rose-400 border border-rose-500/30"
                       }`}
                     >
-                      {result.verdict === "GOLDMINE" ? "Easy to Rank" : result.verdict === "MODERATE" ? "Moderate Effort" : "Hard Competition"}
+                      {result.verdict}
                     </span>
                   </div>
-                  <div className="mt-2 text-3xl font-bold tracking-tight text-white">
-                    {result.opportunity_score}
-                    <span className="text-xs text-zinc-500 font-normal ml-1">/100</span>
+                  <div className="mt-2 flex items-baseline gap-2">
+                    <span className="text-3xl font-extrabold tracking-tight text-white">
+                      {result.opportunity_score}
+                    </span>
+                    <span className="text-xs text-zinc-500 font-mono">/ 100</span>
                   </div>
                 </div>
-                <p className="text-[11px] text-zinc-400 leading-normal pt-2 border-t border-zinc-800/50">
-                  {result.opportunity_score >= 70
-                    ? "Worth writing! Page 1 has weak competition."
-                    : result.opportunity_score >= 45
-                    ? "Feasible, but requires a detailed in-depth article."
-                    : "High competition. Avoid on a brand new blog."}
-                </p>
+
+                {/* Score Progress Bar */}
+                <div className="space-y-1.5">
+                  <div className="w-full h-1.5 rounded-full bg-zinc-800 overflow-hidden">
+                    <div
+                      className={`h-full rounded-full transition-all duration-500 ${
+                        result.opportunity_score >= 70
+                          ? "bg-emerald-400"
+                          : result.opportunity_score >= 45
+                          ? "bg-amber-400"
+                          : "bg-rose-400"
+                      }`}
+                      style={{ width: `${result.opportunity_score}%` }}
+                    />
+                  </div>
+                  <p className="text-[11px] text-zinc-500">
+                    {result.opportunity_score >= 70
+                      ? "High ranking probability with minimal backlink resistance."
+                      : result.opportunity_score >= 45
+                      ? "Moderate competition. Requires authoritative in-depth article."
+                      : "Saturated SERP. Dominated by high DA giants."}
+                  </p>
+                </div>
               </div>
 
               {/* Card 2: Search Demand & Monthly Volume */}
@@ -326,22 +359,20 @@ export default function Home() {
                 <div>
                   <div className="flex items-center justify-between">
                     <span className="text-[11px] font-medium text-zinc-400">Search Demand</span>
-                    <span className="text-[10px] font-semibold text-zinc-400 uppercase">
-                      {result.country}
-                    </span>
+                    <span className="text-[10px] font-mono text-zinc-500 uppercase">{result.country}</span>
                   </div>
                   <div className="mt-2 text-2xl font-bold tracking-tight text-white">
                     {result.demand_level}
                   </div>
                 </div>
-
-                {/* Search Volume in Box 2 */}
-                <div className="pt-2 border-t border-zinc-800/50 flex items-center justify-between text-[11px]">
-                  <span className="text-zinc-400 flex items-center gap-1">
-                    <Flame className="w-3.5 h-3.5 text-orange-400 inline" />
+                
+                {/* Search Volume Display */}
+                <div className="pt-2 border-t border-zinc-800/60 flex items-center justify-between text-xs">
+                  <span className="text-zinc-400 flex items-center gap-1.5">
+                    <Flame className="w-3.5 h-3.5 text-orange-400" />
                     Search Volume:
                   </span>
-                  <span className="font-semibold text-emerald-400 font-mono">
+                  <span className="font-mono font-semibold text-emerald-400 text-sm">
                     {result.estimated_monthly_volume || "~350 / mo"}
                   </span>
                 </div>
@@ -367,15 +398,16 @@ export default function Home() {
                 </div>
 
                 {/* Direct Google First Page Link */}
-                <div className="pt-2 border-t border-zinc-800/50 flex items-center justify-between text-[11px]">
-                  <span className="text-zinc-400">Live Rankings:</span>
+                <div className="pt-2 border-t border-zinc-800/60 flex items-center justify-between text-xs">
+                  <span className="text-zinc-400 text-[11px]">Check SERP:</span>
                   <a
                     href={`https://www.google.com/search?q=${encodeURIComponent(result.keyword)}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="text-amber-400 hover:text-amber-300 font-semibold inline-flex items-center gap-1 hover:underline cursor-pointer"
+                    className="font-medium text-cyan-400 hover:text-cyan-300 text-[11px] flex items-center gap-1 hover:underline cursor-pointer"
                   >
-                    View Google Page 1 <ArrowUpRight className="w-3.5 h-3.5" />
+                    View Google Page 1
+                    <ArrowUpRight className="w-3 h-3" />
                   </a>
                 </div>
               </div>
@@ -389,15 +421,17 @@ export default function Home() {
                       {result.weak_spots_found} Detected
                     </span>
                   </div>
-                  <div className="mt-2 text-2xl font-bold tracking-tight text-white">
-                    {result.weak_spots_found}
-                    <span className="text-xs text-zinc-500 font-normal ml-1.5">
+                  <div className="mt-2 flex items-baseline gap-1.5">
+                    <span className="text-2xl font-bold tracking-tight text-white">
+                      {result.weak_spots_found}
+                    </span>
+                    <span className="text-xs text-zinc-500 font-mono">
                       / {result.total_serp_scanned} scanned
                     </span>
                   </div>
                 </div>
-                <p className="text-[11px] text-zinc-400 leading-normal pt-2 border-t border-zinc-800/50">
-                  Forums or un-optimized articles you can easily outrank.
+                <p className="text-[11px] text-zinc-500">
+                  Forums or directory listings you can easily outrank.
                 </p>
               </div>
             </div>
@@ -413,7 +447,7 @@ export default function Home() {
                       : "text-zinc-500 hover:text-zinc-300"
                   }`}
                 >
-                  Competitors ({result.serp_results.length})
+                  Competitor Titles ({result.competitor_topics?.length || 10})
                 </button>
                 <button
                   onClick={() => setActiveTab("aeo")}
@@ -447,57 +481,140 @@ export default function Home() {
               </button>
             </div>
 
-            {/* TAB 1: Real Competitors List */}
+            {/* TAB 1: Competing Titles & Topics with Search Volume & Competition */}
             {activeTab === "serp" && (
-              <div className="rounded-xl border border-zinc-800/80 bg-zinc-900/40 divide-y divide-zinc-800/50">
-                {result.serp_results.length === 0 ? (
-                  <div className="p-8 text-center text-xs text-zinc-500">
-                    No competitor items found.
-                  </div>
-                ) : (
-                  result.serp_results.map((item) => (
-                    <div
-                      key={item.position}
-                      className="p-3.5 sm:p-4 flex items-start justify-between gap-4 hover:bg-zinc-900/60 transition-colors"
-                    >
-                      <div className="flex items-start gap-3 min-w-0">
-                        <span className="text-xs font-mono text-zinc-500 w-5 pt-0.5 shrink-0">
-                          #{item.position}
-                        </span>
-                        <div className="min-w-0 space-y-1">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <a
-                              href={item.url}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="text-xs sm:text-sm font-medium text-zinc-200 hover:text-white hover:underline flex items-center gap-1 truncate"
-                            >
-                              {item.title}
-                              <ArrowUpRight className="w-3 h-3 text-zinc-500 shrink-0" />
-                            </a>
+              <div className="space-y-4">
+                <div className="rounded-xl border border-zinc-800/80 bg-zinc-900/40 divide-y divide-zinc-800/50">
+                  {(!result.competitor_topics || result.competitor_topics.length === 0) ? (
+                    <div className="p-8 text-center text-xs text-zinc-500">
+                      No competitor topics found.
+                    </div>
+                  ) : (
+                    result.competitor_topics.map((topic) => (
+                      <div
+                        key={topic.position}
+                        className="p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-zinc-900/60 transition-colors"
+                      >
+                        <div className="flex items-start gap-3 min-w-0">
+                          <span className="text-xs font-mono text-zinc-500 w-5 pt-0.5 shrink-0">
+                            #{topic.position}
+                          </span>
+                          <div className="min-w-0 space-y-1">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="text-xs sm:text-sm font-semibold text-zinc-100">
+                                {topic.title}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-2 flex-wrap text-[11px] text-zinc-400 font-mono">
+                              <span>{topic.keyword}</span>
+                              <span className="text-zinc-600">•</span>
+                              <span className="text-zinc-500 text-[10px] uppercase font-sans tracking-wide">
+                                {topic.intent}
+                              </span>
+                            </div>
                           </div>
-                          <p className="text-[11px] text-zinc-500 font-mono truncate">{item.domain}</p>
-                          {item.snippet && (
-                            <p className="text-xs text-zinc-400 line-clamp-1 leading-normal pt-0.5">
-                              {item.snippet}
-                            </p>
-                          )}
+                        </div>
+
+                        {/* Metrics & Action */}
+                        <div className="flex items-center gap-3 shrink-0 self-end sm:self-center pl-8 sm:pl-0">
+                          {/* Search Volume Pill */}
+                          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-zinc-800/70 border border-zinc-700/50 text-xs">
+                            <Flame className="w-3 h-3 text-orange-400" />
+                            <span className="font-mono font-medium text-emerald-400">
+                              {topic.search_volume}
+                            </span>
+                          </div>
+
+                          {/* Competition Pill */}
+                          <div className="flex flex-col items-end">
+                            <span
+                              className={`text-[10px] font-semibold px-2 py-0.5 rounded border ${
+                                topic.competition_level === "Low"
+                                  ? "text-emerald-400 bg-emerald-500/10 border-emerald-500/20"
+                                  : topic.competition_level === "Medium"
+                                  ? "text-amber-400 bg-amber-500/10 border-amber-500/20"
+                                  : "text-rose-400 bg-rose-500/10 border-rose-500/20"
+                              }`}
+                            >
+                              {topic.competition_level} Competition
+                            </span>
+                            <span className="text-[9px] text-zinc-500 font-mono mt-0.5">
+                              {topic.kgr_status}
+                            </span>
+                          </div>
+
+                          {/* 1-Click Deep Scan Button */}
+                          <button
+                            onClick={() => {
+                              setKeyword(topic.keyword);
+                              handleAnalyze(topic.keyword);
+                            }}
+                            className="px-2.5 py-1 text-[11px] font-medium text-zinc-300 hover:text-white bg-zinc-800 hover:bg-zinc-700 rounded border border-zinc-700 transition-colors flex items-center gap-1 cursor-pointer shrink-0"
+                            title="Deep scan this competitor topic"
+                          >
+                            Analyze
+                            <ArrowUpRight className="w-3 h-3 text-zinc-400" />
+                          </button>
                         </div>
                       </div>
+                    ))
+                  )}
+                </div>
 
-                      <div className="shrink-0 pt-0.5">
-                        {item.is_weak_spot ? (
-                          <span className="text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
-                            {item.weak_spot_type || "Weak Spot"}
-                          </span>
-                        ) : (
-                          <span className="text-[10px] text-zinc-500 px-2 py-0.5">
-                            Authority
-                          </span>
-                        )}
-                      </div>
+                {/* Collapsible / Secondary Google SERP Ranking Pages */}
+                {result.serp_results && result.serp_results.length > 0 && (
+                  <div className="p-3.5 rounded-xl border border-zinc-800/60 bg-zinc-950/40 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <button
+                        onClick={() => setShowSerpAudit(!showSerpAudit)}
+                        className="text-xs font-medium text-zinc-400 hover:text-zinc-200 flex items-center gap-1.5 transition-colors cursor-pointer"
+                      >
+                        <span>{showSerpAudit ? "Hide" : "View"} Google Page 1 Ranking Pages ({result.serp_results.length} URLs)</span>
+                        <span className="text-[10px] text-zinc-500">{showSerpAudit ? "▲" : "▼"}</span>
+                      </button>
+                      <a
+                        href={`https://www.google.com/search?q=${encodeURIComponent(result.keyword)}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-[11px] text-zinc-500 hover:text-zinc-300 flex items-center gap-1 transition-colors"
+                      >
+                        Open in Google
+                        <ArrowUpRight className="w-3 h-3" />
+                      </a>
                     </div>
-                  ))
+
+                    {showSerpAudit && (
+                      <div className="divide-y divide-zinc-800/40 pt-2">
+                        {result.serp_results.map((item) => (
+                          <div key={item.position} className="py-2.5 flex items-start justify-between gap-3 text-xs">
+                            <div className="min-w-0 space-y-0.5">
+                              <div className="flex items-center gap-2">
+                                <span className="font-mono text-zinc-500">#{item.position}</span>
+                                <a
+                                  href={item.url}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="text-zinc-300 hover:text-white hover:underline truncate"
+                                >
+                                  {item.title}
+                                </a>
+                              </div>
+                              <p className="text-[11px] text-zinc-500 font-mono">{item.domain}</p>
+                            </div>
+                            <div className="shrink-0">
+                              {item.is_weak_spot ? (
+                                <span className="text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                                  {item.weak_spot_type || "Weak Spot"}
+                                </span>
+                              ) : (
+                                <span className="text-[10px] text-zinc-500 px-2 py-0.5">Authority</span>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 )}
               </div>
             )}
@@ -519,116 +636,95 @@ export default function Home() {
                     <div className="flex justify-between py-1.5 border-b border-zinc-800/50">
                       <span className="text-zinc-400">Featured Snippet Opportunity</span>
                       <span className="font-semibold text-zinc-200">
-                        {result.aeo_geo.has_featured_snippet ? "Yes" : "No"}
+                        {result.aeo_geo.has_featured_snippet ? "High" : "Low"}
                       </span>
                     </div>
                     <div className="flex justify-between py-1.5 border-b border-zinc-800/50">
-                      <span className="text-zinc-400">Citation Potential Score</span>
-                      <span className="font-semibold text-emerald-400">
-                        {result.aeo_geo.aeo_potential_score}%
+                      <span className="text-zinc-400">Recommended Layout</span>
+                      <span className="font-mono text-zinc-300 uppercase text-[11px]">
+                        {result.aeo_geo.recommended_format}
                       </span>
                     </div>
                   </div>
                 </div>
 
                 <div className="p-5 rounded-xl border border-zinc-800/80 bg-zinc-900/40 space-y-3">
-                  <span className="text-xs font-semibold text-zinc-300">
-                    Writing Formula for AI Engines
+                  <span className="text-xs font-semibold text-zinc-300 flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                    Guerrilla Blueprint for AEO
                   </span>
-                  <div className="space-y-2 pt-1">
-                    <div className="text-xs">
-                      <span className="text-zinc-500 block text-[10px] uppercase font-bold">
-                        Required Layout
-                      </span>
-                      <p className="text-xs font-semibold text-zinc-200 pt-0.5">
-                        {result.aeo_geo.recommended_format}
-                      </p>
-                    </div>
-                    <div className="text-xs pt-2">
-                      <span className="text-zinc-500 block text-[10px] uppercase font-bold">
-                        Optimization Tip
-                      </span>
-                      <p className="text-xs text-zinc-400 pt-0.5 leading-relaxed">
-                        {result.aeo_geo.actionable_tip}
-                      </p>
-                    </div>
-                  </div>
+                  <p className="text-xs text-zinc-400 leading-relaxed pt-1">
+                    {result.aeo_geo.actionable_tip}
+                  </p>
                 </div>
               </div>
             )}
 
-            {/* TAB 3: Titles & Subheadings */}
+            {/* TAB 3: Titles & Subheadings Generator */}
             {activeTab === "content" && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Titles */}
+                {/* High CTR Titles */}
                 <div className="p-5 rounded-xl border border-zinc-800/80 bg-zinc-900/40 space-y-3">
-                  <div className="flex justify-between items-center">
+                  <div className="flex items-center justify-between">
                     <span className="text-xs font-semibold text-zinc-300">
-                      High-CTR Blog Titles
+                      Viral & High-CTR Title Formulas
                     </span>
-                    <span className="text-[10px] text-zinc-500">Click to copy</span>
+                    <span className="text-[10px] text-zinc-500 font-mono">
+                      {result.high_ctr_titles.length} Suggestions
+                    </span>
                   </div>
-                  <div className="space-y-2">
-                    {result.high_ctr_titles.map((title) => (
-                      <button
-                        key={title}
-                        onClick={() => handleCopy(title)}
-                        className="w-full text-left p-2.5 rounded-lg bg-zinc-950/60 hover:bg-zinc-800/40 border border-zinc-800/60 text-xs text-zinc-300 hover:text-white transition-colors flex items-center justify-between group cursor-pointer"
+                  <div className="space-y-2 pt-1">
+                    {result.high_ctr_titles.map((t, idx) => (
+                      <div
+                        key={idx}
+                        className="p-3 rounded-lg bg-zinc-950/50 border border-zinc-800/50 flex items-center justify-between gap-3 text-xs hover:border-zinc-700/60 transition-colors group"
                       >
-                        <span className="truncate pr-2">{title}</span>
-                        {copiedText === title ? (
-                          <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                        ) : (
-                          <Copy className="w-3.5 h-3.5 text-zinc-600 group-hover:text-zinc-400 shrink-0" />
-                        )}
-                      </button>
+                        <span className="text-zinc-200 font-medium">{t}</span>
+                        <button
+                          onClick={() => handleCopy(t)}
+                          className="text-zinc-500 group-hover:text-zinc-300 p-1 hover:bg-zinc-800 rounded transition-colors cursor-pointer shrink-0"
+                          title="Copy title"
+                        >
+                          {copiedText === t ? (
+                            <Check className="w-3.5 h-3.5 text-emerald-400" />
+                          ) : (
+                            <Copy className="w-3.5 h-3.5" />
+                          )}
+                        </button>
+                      </div>
                     ))}
                   </div>
                 </div>
 
-                {/* Subheadings */}
+                {/* People Also Ask (H2/H3s) */}
                 <div className="p-5 rounded-xl border border-zinc-800/80 bg-zinc-900/40 space-y-3">
-                  <div className="flex justify-between items-center">
+                  <div className="flex items-center justify-between">
                     <span className="text-xs font-semibold text-zinc-300">
-                      Article Subheadings & FAQs (PAA)
+                      People Also Ask (H2/H3 Section Outlines)
                     </span>
-                    <span className="text-[10px] text-zinc-500">Click to copy</span>
+                    <span className="text-[10px] text-zinc-500 font-mono">
+                      {result.people_also_ask.length} Headings
+                    </span>
                   </div>
-                  <div className="space-y-2">
-                    {result.people_also_ask.map((paa) => (
-                      <button
-                        key={paa}
-                        onClick={() => handleCopy(paa)}
-                        className="w-full text-left p-2.5 rounded-lg bg-zinc-950/60 hover:bg-zinc-800/40 border border-zinc-800/60 text-xs text-zinc-300 hover:text-white transition-colors flex items-center justify-between group cursor-pointer"
+                  <div className="space-y-2 pt-1">
+                    {result.people_also_ask.map((q, idx) => (
+                      <div
+                        key={idx}
+                        className="p-3 rounded-lg bg-zinc-950/50 border border-zinc-800/50 flex items-center justify-between gap-3 text-xs hover:border-zinc-700/60 transition-colors group"
                       >
-                        <span className="truncate pr-2">{paa}</span>
-                        {copiedText === paa ? (
-                          <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                        ) : (
-                          <Copy className="w-3.5 h-3.5 text-zinc-600 group-hover:text-zinc-400 shrink-0" />
-                        )}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Autocomplete Cloud */}
-                <div className="md:col-span-2 p-5 rounded-xl border border-zinc-800/80 bg-zinc-900/40 space-y-3">
-                  <span className="text-xs font-semibold text-zinc-300">
-                    Related Keyword Variations
-                  </span>
-                  <div className="flex flex-wrap gap-1.5 pt-1">
-                    {result.related_keywords.map((kw) => (
-                      <button
-                        key={kw}
-                        onClick={() => {
-                          setKeyword(kw);
-                          handleAnalyze(kw);
-                        }}
-                        className="px-2.5 py-1 rounded-md bg-zinc-950 border border-zinc-800 text-[11px] text-zinc-400 hover:text-white hover:border-zinc-700 transition-colors cursor-pointer"
-                      >
-                        {kw}
-                      </button>
+                        <span className="text-zinc-300">{q}</span>
+                        <button
+                          onClick={() => handleCopy(q)}
+                          className="text-zinc-500 group-hover:text-zinc-300 p-1 hover:bg-zinc-800 rounded transition-colors cursor-pointer shrink-0"
+                          title="Copy question"
+                        >
+                          {copiedText === q ? (
+                            <Check className="w-3.5 h-3.5 text-emerald-400" />
+                          ) : (
+                            <Copy className="w-3.5 h-3.5" />
+                          )}
+                        </button>
+                      </div>
                     ))}
                   </div>
                 </div>
@@ -638,9 +734,9 @@ export default function Home() {
         )}
       </main>
 
-      {/* Clean Minimal Footer */}
-      <footer className="border-t border-zinc-800/60 py-4 text-center text-xs text-zinc-500">
-        GanimiRank • Autonomous Search Intelligence
+      {/* Sleek Minimal Footer */}
+      <footer className="border-t border-zinc-800/80 bg-zinc-950/30 py-4 text-center text-xs text-zinc-600 font-mono">
+        GanimiRank • Autonomous Guerrilla Search Intelligence & AEO/GEO Dominance Engine
       </footer>
     </div>
   );
