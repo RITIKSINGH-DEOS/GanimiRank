@@ -181,7 +181,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-[#09090b] text-zinc-100 flex flex-col font-sans selection:bg-emerald-500/20 selection:text-white relative overflow-hidden">
+    <div className="min-h-screen bg-[#09090b] text-zinc-100 flex flex-col font-sans selection:bg-white selection:text-black relative overflow-hidden">
       {/* Interactive 3D Ambient Background */}
       <Background3D />
 
@@ -194,15 +194,15 @@ export default function Home() {
             </div>
             <div className="flex items-center gap-2">
               <span className="font-semibold tracking-tight text-white text-base">GanimiRank</span>
-              <span className="text-[10px] font-mono tracking-widest uppercase bg-zinc-800/80 text-emerald-400 px-1.5 py-0.5 rounded border border-emerald-500/30">
-                v1.7.0
+              <span className="text-[10px] font-mono tracking-widest uppercase bg-zinc-900 text-zinc-300 px-1.5 py-0.5 rounded border border-zinc-700/60">
+                v1.8.0
               </span>
             </div>
           </div>
           <div className="flex items-center gap-4 text-xs text-zinc-400 font-mono">
             <span className="hidden sm:inline">Guerrilla Search Engine</span>
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 text-[11px] shadow-[0_0_12px_rgba(16,185,129,0.15)]">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/[0.06] text-zinc-200 border border-white/15 text-[11px] shadow-[0_0_12px_rgba(255,255,255,0.08)]">
+              <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
               Live Engines
             </span>
           </div>
@@ -218,7 +218,7 @@ export default function Home() {
               e.preventDefault();
               handleAnalyze();
             }}
-            className="flex flex-col sm:flex-row gap-2 glass-panel p-2 rounded-2xl shadow-2xl backdrop-blur-2xl focus-within:border-emerald-500/40 focus-within:shadow-[0_0_25px_rgba(16,185,129,0.15)] transition-all"
+            className="flex flex-col sm:flex-row gap-2 glass-panel p-2 rounded-2xl shadow-2xl backdrop-blur-2xl focus-within:border-white/35 focus-within:shadow-[0_0_25px_rgba(255,255,255,0.08)] transition-all"
           >
             <div className="flex-1 flex items-center gap-2.5 px-3 min-h-[44px]">
               <Search className="w-4 h-4 text-zinc-500 shrink-0" />
@@ -288,7 +288,7 @@ export default function Home() {
                   setKeyword(preset);
                   handleAnalyze(preset);
                 }}
-                className="shrink-0 px-2.5 py-1 rounded-md glass-card-item hover:border-emerald-500/40 text-zinc-400 hover:text-white transition-all cursor-pointer text-[11px]"
+                className="shrink-0 px-2.5 py-1 rounded-md glass-card-item hover:border-white/30 text-zinc-400 hover:text-white transition-all cursor-pointer text-[11px]"
               >
                 {preset}
               </button>
@@ -303,23 +303,99 @@ export default function Home() {
           </div>
         )}
 
+        {/* Empty State / Initial Landing Showcase */}
+        {!result && !loading && (
+          <div className="py-8 sm:py-12 space-y-10">
+            {/* Value Proposition Hero */}
+            <div className="text-center max-w-2xl mx-auto space-y-3">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.06] border border-white/10 text-[11px] font-mono text-zinc-300">
+                <Sparkles className="w-3.5 h-3.5 text-white" />
+                <span>Autonomous Search & Generative AI Intelligence</span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
+                Dominate Google SERPs & AI Overviews
+              </h2>
+              <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed max-w-xl mx-auto">
+                Scan Google Page 1 weak spots, calculate real search demand, and generate AEO/GEO blueprints for Google AI Overviews, Perplexity & ChatGPT Search.
+              </p>
+            </div>
+
+            {/* 3 Monochrome Capability Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="glass-card rounded-2xl p-5 space-y-3 hover:border-white/30 cursor-default">
+                <div className="w-9 h-9 rounded-xl bg-white/[0.08] border border-white/10 flex items-center justify-center">
+                  <Bot className="w-4 h-4 text-white" />
+                </div>
+                <h3 className="text-sm font-semibold text-white">
+                  AEO & GEO Optimization
+                </h3>
+                <p className="text-xs text-zinc-400 leading-relaxed">
+                  Reverse-engineer Google AI Overviews, Perplexity, and ChatGPT citations with structured snippet blueprints.
+                </p>
+              </div>
+
+              <div className="glass-card rounded-2xl p-5 space-y-3 hover:border-white/30 cursor-default">
+                <div className="w-9 h-9 rounded-xl bg-white/[0.08] border border-white/10 flex items-center justify-center">
+                  <Layers className="w-4 h-4 text-white" />
+                </div>
+                <h3 className="text-sm font-semibold text-white">
+                  Page 1 Weak Spot Detection
+                </h3>
+                <p className="text-xs text-zinc-400 leading-relaxed">
+                  Identify low-authority forums, Reddit, and Quora discussions ranking on Page 1 that you can outrank.
+                </p>
+              </div>
+
+              <div className="glass-card rounded-2xl p-5 space-y-3 hover:border-white/30 cursor-default">
+                <div className="w-9 h-9 rounded-xl bg-white/[0.08] border border-white/10 flex items-center justify-center">
+                  <TrendingUp className="w-4 h-4 text-white" />
+                </div>
+                <h3 className="text-sm font-semibold text-white">
+                  Viral CTR & Outline Formulas
+                </h3>
+                <p className="text-xs text-zinc-400 leading-relaxed">
+                  Generate 7 high-CTR headline formulas and exact People Also Ask H2/H3 outlines ready to publish in minutes.
+                </p>
+              </div>
+            </div>
+
+            {/* Engine Trust Strip */}
+            <div className="flex flex-wrap items-center justify-center gap-6 text-xs text-zinc-500 font-mono pt-4 border-t border-white/[0.06]">
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-zinc-400" />
+                <span>100% Free Forever</span>
+              </div>
+              <span className="text-zinc-700">•</span>
+              <div className="flex items-center gap-2">
+                <Zap className="w-4 h-4 text-zinc-400" />
+                <span>Real-Time Google Suggestions</span>
+              </div>
+              <span className="text-zinc-700">•</span>
+              <div className="flex items-center gap-2">
+                <Globe className="w-4 h-4 text-zinc-400" />
+                <span>Global & Local SERP Audits</span>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Results Console */}
         {result && (
           <div className="space-y-6">
             {/* 4 Primary Dials Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
               {/* Card 1: Guerrilla Opportunity Score */}
-              <div className="glass-card rounded-2xl p-4.5 space-y-3 flex flex-col justify-between hover:border-emerald-500/40 cursor-default">
+              <div className="glass-card rounded-2xl p-4.5 space-y-3 flex flex-col justify-between hover:border-white/30 cursor-default">
                 <div>
                   <div className="flex items-center justify-between">
                     <span className="text-[11px] font-medium text-zinc-400">Guerrilla Verdict</span>
                     <span
                       className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider ${
                         result.verdict === "GOLDMINE"
-                          ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
+                          ? "bg-white text-black border border-white shadow-[0_0_10px_rgba(255,255,255,0.3)]"
                           : result.verdict === "MODERATE"
-                          ? "bg-amber-500/15 text-amber-400 border border-amber-500/30"
-                          : "bg-rose-500/15 text-rose-400 border border-rose-500/30"
+                          ? "bg-zinc-800 text-zinc-200 border border-zinc-700"
+                          : "bg-zinc-900 text-zinc-400 border border-zinc-800"
                       }`}
                     >
                       {result.verdict}
@@ -339,10 +415,10 @@ export default function Home() {
                     <div
                       className={`h-full rounded-full transition-all duration-500 ${
                         result.opportunity_score >= 70
-                          ? "bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]"
+                          ? "bg-white shadow-[0_0_8px_rgba(255,255,255,0.7)]"
                           : result.opportunity_score >= 45
-                          ? "bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.5)]"
-                          : "bg-rose-400 shadow-[0_0_8px_rgba(244,63,94,0.5)]"
+                          ? "bg-zinc-300"
+                          : "bg-zinc-600"
                       }`}
                       style={{ width: `${result.opportunity_score}%` }}
                     />
@@ -358,7 +434,7 @@ export default function Home() {
               </div>
 
               {/* Card 2: Search Demand & Monthly Volume */}
-              <div className="glass-card rounded-2xl p-4.5 space-y-3 flex flex-col justify-between hover:border-orange-500/40 cursor-default">
+              <div className="glass-card rounded-2xl p-4.5 space-y-3 flex flex-col justify-between hover:border-white/30 cursor-default">
                 <div>
                   <div className="flex items-center justify-between">
                     <span className="text-[11px] font-medium text-zinc-400">Search Demand</span>
@@ -372,23 +448,23 @@ export default function Home() {
                 {/* Search Volume Display */}
                 <div className="pt-2 border-t border-white/[0.06] flex items-center justify-between text-xs">
                   <span className="text-zinc-400 flex items-center gap-1.5">
-                    <Flame className="w-3.5 h-3.5 text-orange-400" />
+                    <Flame className="w-3.5 h-3.5 text-zinc-400" />
                     Search Volume:
                   </span>
-                  <span className="font-mono font-semibold text-emerald-400 text-sm">
+                  <span className="font-mono font-semibold text-white text-sm">
                     {result.estimated_monthly_volume || "~350 / mo"}
                   </span>
                 </div>
               </div>
 
               {/* Card 3: Direct Competitors & Google Page 1 Link */}
-              <div className="glass-card rounded-2xl p-4.5 space-y-3 flex flex-col justify-between hover:border-cyan-500/40 cursor-default">
+              <div className="glass-card rounded-2xl p-4.5 space-y-3 flex flex-col justify-between hover:border-white/30 cursor-default">
                 <div>
                   <div className="flex items-center justify-between">
                     <span className="text-[11px] font-medium text-zinc-400">Direct Competitors</span>
                     <span
-                      className={`text-[10px] font-semibold ${
-                        result.allintitle_count <= 30 ? "text-emerald-400" : "text-amber-400"
+                      className={`text-[10px] font-semibold font-mono ${
+                        result.allintitle_count <= 30 ? "text-white" : "text-zinc-400"
                       }`}
                     >
                       {result.allintitle_count <= 30 ? "Low Supply" : "Standard"}
@@ -407,7 +483,7 @@ export default function Home() {
                     href={`https://www.google.com/search?q=${encodeURIComponent(result.keyword)}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="font-medium text-cyan-400 hover:text-cyan-300 text-[11px] flex items-center gap-1 hover:underline cursor-pointer"
+                    className="font-medium text-zinc-300 hover:text-white text-[11px] flex items-center gap-1 hover:underline cursor-pointer"
                   >
                     View Google Page 1
                     <ArrowUpRight className="w-3 h-3" />
@@ -416,11 +492,11 @@ export default function Home() {
               </div>
 
               {/* Card 4: SERP Weak Spots */}
-              <div className="glass-card rounded-2xl p-4.5 space-y-3 flex flex-col justify-between hover:border-emerald-500/40 cursor-default">
+              <div className="glass-card rounded-2xl p-4.5 space-y-3 flex flex-col justify-between hover:border-white/30 cursor-default">
                 <div>
                   <div className="flex items-center justify-between">
                     <span className="text-[11px] font-medium text-zinc-400">Page 1 Weak Spots</span>
-                    <span className="text-[10px] font-semibold text-emerald-400">
+                    <span className="text-[10px] font-semibold text-white font-mono">
                       {result.weak_spots_found} Detected
                     </span>
                   </div>
@@ -521,8 +597,8 @@ export default function Home() {
                       <div className="flex items-center gap-3 shrink-0 self-end sm:self-center pl-8 sm:pl-0">
                         {/* Search Volume Pill */}
                         <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-zinc-950/70 border border-white/[0.08] text-xs shadow-sm">
-                          <Flame className="w-3 h-3 text-orange-400" />
-                          <span className="font-mono font-medium text-emerald-400">
+                          <Flame className="w-3 h-3 text-zinc-400" />
+                          <span className="font-mono font-medium text-white">
                             {topic.search_volume}
                           </span>
                         </div>
@@ -532,10 +608,10 @@ export default function Home() {
                           <span
                             className={`text-[10px] font-semibold px-2 py-0.5 rounded border ${
                               topic.competition_level === "Low"
-                                ? "text-emerald-400 bg-emerald-500/10 border-emerald-500/20 shadow-[0_0_10px_rgba(52,211,153,0.15)]"
+                                ? "text-white bg-white/10 border-white/25 shadow-[0_0_10px_rgba(255,255,255,0.1)]"
                                 : topic.competition_level === "Medium"
-                                ? "text-amber-400 bg-amber-500/10 border-amber-500/20 shadow-[0_0_10px_rgba(251,191,36,0.15)]"
-                                : "text-rose-400 bg-rose-500/10 border-rose-500/20 shadow-[0_0_10px_rgba(244,63,94,0.15)]"
+                                ? "text-zinc-300 bg-zinc-800 border-zinc-700"
+                                : "text-zinc-400 bg-zinc-900 border-zinc-800"
                             }`}
                           >
                             {topic.competition_level} Competition
@@ -551,7 +627,7 @@ export default function Home() {
                             setKeyword(topic.keyword);
                             handleAnalyze(topic.keyword);
                           }}
-                          className="px-2.5 py-1 text-[11px] font-medium text-zinc-300 hover:text-white bg-zinc-800/80 hover:bg-zinc-700/80 hover:border-emerald-500/40 rounded border border-zinc-700 transition-all flex items-center gap-1 cursor-pointer shrink-0 shadow-sm"
+                          className="px-2.5 py-1 text-[11px] font-medium text-zinc-300 hover:text-white bg-zinc-800/80 hover:bg-zinc-700/80 hover:border-white/30 rounded border border-zinc-700 transition-all flex items-center gap-1 cursor-pointer shrink-0 shadow-sm"
                           title="Deep scan this competitor topic"
                         >
                           Analyze
@@ -567,7 +643,7 @@ export default function Home() {
             {/* TAB 2: AI Overviews & GEO Blueprint */}
             {activeTab === "aeo" && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="glass-card rounded-2xl p-5 space-y-3 hover:border-cyan-500/40">
+                <div className="glass-card rounded-2xl p-5 space-y-3 hover:border-white/30">
                   <span className="text-xs font-semibold text-zinc-300">
                     AI Citation Readiness
                   </span>
@@ -593,9 +669,9 @@ export default function Home() {
                   </div>
                 </div>
 
-                <div className="glass-card rounded-2xl p-5 space-y-3 hover:border-amber-500/40">
+                <div className="glass-card rounded-2xl p-5 space-y-3 hover:border-white/30">
                   <span className="text-xs font-semibold text-zinc-300 flex items-center gap-1.5">
-                    <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                    <Sparkles className="w-3.5 h-3.5 text-white" />
                     Guerrilla Blueprint for AEO
                   </span>
                   <p className="text-xs text-zinc-400 leading-relaxed pt-1">
@@ -609,7 +685,7 @@ export default function Home() {
             {activeTab === "content" && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* High CTR Titles */}
-                <div className="glass-card rounded-2xl p-5 space-y-3 hover:border-emerald-500/40">
+                <div className="glass-card rounded-2xl p-5 space-y-3 hover:border-white/30">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-semibold text-zinc-300">
                       Viral & High-CTR Title Formulas
@@ -622,7 +698,7 @@ export default function Home() {
                     {result.high_ctr_titles.map((t, idx) => (
                       <div
                         key={idx}
-                        className="glass-card-item p-3 rounded-xl flex items-center justify-between gap-3 text-xs hover:border-emerald-500/40 hover:bg-zinc-900/60 transition-all group"
+                        className="glass-card-item p-3 rounded-xl flex items-center justify-between gap-3 text-xs hover:border-white/30 hover:bg-zinc-900/60 transition-all group"
                       >
                         <span className="text-zinc-200 font-medium">{t}</span>
                         <button
@@ -631,7 +707,7 @@ export default function Home() {
                           title="Copy title"
                         >
                           {copiedText === t ? (
-                            <Check className="w-3.5 h-3.5 text-emerald-400" />
+                            <Check className="w-3.5 h-3.5 text-white" />
                           ) : (
                             <Copy className="w-3.5 h-3.5" />
                           )}
@@ -642,7 +718,7 @@ export default function Home() {
                 </div>
 
                 {/* People Also Ask (H2/H3s) */}
-                <div className="glass-card rounded-2xl p-5 space-y-3 hover:border-cyan-500/40">
+                <div className="glass-card rounded-2xl p-5 space-y-3 hover:border-white/30">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-semibold text-zinc-300">
                       People Also Ask (H2/H3 Section Outlines)
@@ -655,7 +731,7 @@ export default function Home() {
                     {result.people_also_ask.map((q, idx) => (
                       <div
                         key={idx}
-                        className="glass-card-item p-3 rounded-xl flex items-center justify-between gap-3 text-xs hover:border-cyan-500/40 hover:bg-zinc-900/60 transition-all group"
+                        className="glass-card-item p-3 rounded-xl flex items-center justify-between gap-3 text-xs hover:border-white/30 hover:bg-zinc-900/60 transition-all group"
                       >
                         <span className="text-zinc-300">{q}</span>
                         <button
@@ -664,7 +740,7 @@ export default function Home() {
                           title="Copy question"
                         >
                           {copiedText === q ? (
-                            <Check className="w-3.5 h-3.5 text-emerald-400" />
+                            <Check className="w-3.5 h-3.5 text-white" />
                           ) : (
                             <Copy className="w-3.5 h-3.5" />
                           )}
@@ -680,8 +756,8 @@ export default function Home() {
       </main>
 
       {/* Sleek Minimal Footer */}
-      <footer className="border-t border-white/[0.08] bg-zinc-950/40 backdrop-blur-md py-4 text-center text-xs text-zinc-500 font-mono relative z-10">
-        GanimiRank • Autonomous Guerrilla Search Intelligence & AEO/GEO Dominance Engine
+      <footer className="border-t border-white/[0.08] bg-zinc-950/40 backdrop-blur-md py-4 text-center text-xs text-zinc-400 font-mono relative z-10">
+        Autonomous SEO & AEO/GEO
       </footer>
     </div>
   );
