@@ -130,8 +130,8 @@ export default function CompetitorTopicsTab({
                 </button>
               </div>
 
-              {/* Subtitle Aligned Below the Row */}
-              <span className={`text-[10px] font-mono pr-1 ${compStyle.subtitle}`}>
+              {/* Subtitle Aligned Below the Row - Compact refined font size */}
+              <span className={`text-[9px] font-mono pr-1 tracking-tight ${compStyle.subtitle}`}>
                 {topic.kgr_status}
               </span>
             </div>
