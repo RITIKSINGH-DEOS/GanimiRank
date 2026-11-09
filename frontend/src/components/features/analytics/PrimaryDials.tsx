@@ -7,6 +7,61 @@ interface PrimaryDialsProps {
 }
 
 export default function PrimaryDials({ result }: PrimaryDialsProps) {
+  // Verdict styling
+  const isGoldmine = result.verdict === "GOLDMINE";
+  const isModerate = result.verdict === "MODERATE";
+
+  const verdictBadgeStyle = isGoldmine
+    ? "bg-emerald-500/15 text-emerald-400 border-emerald-500/30 shadow-[0_0_12px_rgba(52,211,153,0.25)]"
+    : isModerate
+    ? "bg-amber-500/15 text-amber-400 border-amber-500/30 shadow-[0_0_12px_rgba(251,191,36,0.25)]"
+    : "bg-rose-500/15 text-rose-400 border-rose-500/30 shadow-[0_0_12px_rgba(244,63,94,0.25)]";
+
+  const scoreColor =
+    result.opportunity_score >= 70
+      ? "text-emerald-400"
+      : result.opportunity_score >= 45
+      ? "text-amber-400"
+      : "text-rose-400";
+
+  const progressBarColor =
+    result.opportunity_score >= 70
+      ? "bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.6)]"
+      : result.opportunity_score >= 45
+      ? "bg-amber-400 shadow-[0_0_10px_rgba(251,191,36,0.6)]"
+      : "bg-rose-500 shadow-[0_0_10px_rgba(244,63,94,0.6)]";
+
+  // Demand styling
+  const isHighDemand = result.demand_level === "HIGH";
+  const isMedDemand = result.demand_level === "MEDIUM";
+  const demandTextColor = isHighDemand
+    ? "text-emerald-400"
+    : isMedDemand
+    ? "text-amber-400"
+    : "text-rose-400";
+
+  const flameColor = isHighDemand
+    ? "text-emerald-400 fill-emerald-400/40"
+    : isMedDemand
+    ? "text-amber-400 fill-amber-400/40"
+    : "text-rose-400 fill-rose-400/40";
+
+  // Competition Supply styling
+  const supplyBadgeColor =
+    result.allintitle_count <= 30
+      ? "text-emerald-400"
+      : result.allintitle_count <= 100
+      ? "text-amber-400"
+      : "text-rose-400";
+
+  // Weak spot styling
+  const weakSpotsColor =
+    result.weak_spots_found >= 3
+      ? "text-emerald-400"
+      : result.weak_spots_found >= 1
+      ? "text-amber-400"
+      : "text-zinc-400";
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
       {/* Card 1: Guerrilla Opportunity Score */}
@@ -15,19 +70,13 @@ export default function PrimaryDials({ result }: PrimaryDialsProps) {
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-medium text-zinc-400">Guerrilla Verdict</span>
             <span
-              className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider ${
-                result.verdict === "GOLDMINE"
-                  ? "bg-white text-black border border-white shadow-[0_0_10px_rgba(255,255,255,0.3)]"
-                  : result.verdict === "MODERATE"
-                  ? "bg-zinc-800 text-zinc-200 border border-zinc-700"
-                  : "bg-zinc-900 text-zinc-400 border border-zinc-800"
-              }`}
+              className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider border ${verdictBadgeStyle}`}
             >
               {result.verdict}
             </span>
           </div>
           <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-3xl font-extrabold tracking-tight text-white">
+            <span className={`text-3xl font-extrabold tracking-tight ${scoreColor}`}>
               {result.opportunity_score}
             </span>
             <span className="text-xs text-zinc-500 font-mono">/ 100</span>
@@ -38,13 +87,7 @@ export default function PrimaryDials({ result }: PrimaryDialsProps) {
         <div className="space-y-1.5">
           <div className="w-full h-1.5 rounded-full bg-zinc-800/80 overflow-hidden">
             <div
-              className={`h-full rounded-full transition-all duration-500 ${
-                result.opportunity_score >= 70
-                  ? "bg-white shadow-[0_0_8px_rgba(255,255,255,0.7)]"
-                  : result.opportunity_score >= 45
-                  ? "bg-zinc-300"
-                  : "bg-zinc-600"
-              }`}
+              className={`h-full rounded-full transition-all duration-500 ${progressBarColor}`}
               style={{ width: `${result.opportunity_score}%` }}
             />
           </div>
@@ -65,7 +108,7 @@ export default function PrimaryDials({ result }: PrimaryDialsProps) {
             <span className="text-[11px] font-medium text-zinc-400">Search Demand</span>
             <span className="text-[10px] font-mono text-zinc-500 uppercase">{result.country}</span>
           </div>
-          <div className="mt-2 text-2xl font-bold tracking-tight text-white">
+          <div className={`mt-2 text-2xl font-bold tracking-tight ${demandTextColor}`}>
             {result.demand_level}
           </div>
         </div>
@@ -73,7 +116,7 @@ export default function PrimaryDials({ result }: PrimaryDialsProps) {
         {/* Search Volume Display */}
         <div className="pt-2 border-t border-white/[0.06] flex items-center justify-between text-xs">
           <span className="text-zinc-400 flex items-center gap-1.5">
-            <Flame className="w-3.5 h-3.5 text-zinc-400" />
+            <Flame className={`w-3.5 h-3.5 ${flameColor}`} />
             Search Volume:
           </span>
           <span className="font-mono font-semibold text-white text-sm">
@@ -87,12 +130,12 @@ export default function PrimaryDials({ result }: PrimaryDialsProps) {
         <div>
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-medium text-zinc-400">Direct Competitors</span>
-            <span
-              className={`text-[10px] font-semibold font-mono ${
-                result.allintitle_count <= 30 ? "text-white" : "text-zinc-400"
-              }`}
-            >
-              {result.allintitle_count <= 30 ? "Low Supply" : "Standard"}
+            <span className={`text-[10px] font-semibold font-mono ${supplyBadgeColor}`}>
+              {result.allintitle_count <= 30
+                ? "Low Supply"
+                : result.allintitle_count <= 100
+                ? "Moderate Supply"
+                : "High Supply"}
             </span>
           </div>
           <div className="mt-2 text-2xl font-bold tracking-tight text-white">
@@ -121,12 +164,12 @@ export default function PrimaryDials({ result }: PrimaryDialsProps) {
         <div>
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-medium text-zinc-400">Page 1 Weak Spots</span>
-            <span className="text-[10px] font-semibold text-white font-mono">
+            <span className={`text-[10px] font-semibold font-mono ${weakSpotsColor}`}>
               {result.weak_spots_found} Detected
             </span>
           </div>
           <div className="mt-2 flex items-baseline gap-1.5">
-            <span className="text-2xl font-bold tracking-tight text-white">
+            <span className={`text-2xl font-bold tracking-tight ${weakSpotsColor}`}>
               {result.weak_spots_found}
             </span>
             <span className="text-xs text-zinc-500 font-mono">
