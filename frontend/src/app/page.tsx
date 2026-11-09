@@ -321,7 +321,7 @@ export default function Home() {
                 </p>
               </div>
 
-              {/* Card 2: Search Demand */}
+              {/* Card 2: Search Demand & Monthly Volume */}
               <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800/80 space-y-3 flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between">
@@ -334,12 +334,20 @@ export default function Home() {
                     {result.demand_level}
                   </div>
                 </div>
-                <p className="text-[11px] text-zinc-400 leading-normal pt-2 border-t border-zinc-800/50">
-                  Audience interest calculated from Google search suggestions.
-                </p>
+
+                {/* Search Volume in Box 2 */}
+                <div className="pt-2 border-t border-zinc-800/50 flex items-center justify-between text-[11px]">
+                  <span className="text-zinc-400 flex items-center gap-1">
+                    <Flame className="w-3.5 h-3.5 text-orange-400 inline" />
+                    Search Volume:
+                  </span>
+                  <span className="font-semibold text-emerald-400 font-mono">
+                    {result.estimated_monthly_volume || "~350 / mo"}
+                  </span>
+                </div>
               </div>
 
-              {/* Card 3: Direct Competitors & Search Volume */}
+              {/* Card 3: Direct Competitors */}
               <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800/80 space-y-3 flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between">
@@ -352,26 +360,14 @@ export default function Home() {
                       {result.allintitle_count <= 30 ? "Low Supply" : "Standard"}
                     </span>
                   </div>
-                  <div className="mt-2 flex items-baseline justify-between">
-                    <div>
-                      <span className="text-2xl font-bold tracking-tight text-white">
-                        {result.allintitle_count}
-                      </span>
-                      <span className="text-xs text-zinc-500 font-normal ml-1.5">titles online</span>
-                    </div>
+                  <div className="mt-2 text-2xl font-bold tracking-tight text-white">
+                    {result.allintitle_count}
+                    <span className="text-xs text-zinc-500 font-normal ml-1.5">titles online</span>
                   </div>
                 </div>
-
-                {/* Search Volume Integration in Box 3 */}
-                <div className="pt-2 border-t border-zinc-800/50 flex items-center justify-between text-[11px]">
-                  <span className="text-zinc-400 flex items-center gap-1">
-                    <Flame className="w-3.5 h-3.5 text-orange-400 inline" />
-                    Search Volume:
-                  </span>
-                  <span className="font-semibold text-emerald-400 font-mono">
-                    {result.estimated_monthly_volume || "~350 / mo"}
-                  </span>
-                </div>
+                <p className="text-[11px] text-zinc-400 leading-normal pt-2 border-t border-zinc-800/50">
+                  Websites that actually put this exact phrase in their title.
+                </p>
               </div>
 
               {/* Card 4: SERP Weak Spots */}
