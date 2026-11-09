@@ -1,36 +1,70 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# GanimiRank Frontend Console
 
-## Getting Started
+Luxury High-Performance Web Console for GanimiRank built with **Next.js 16 (App Router)**, **TypeScript**, **Tailwind CSS v4**, and **Lucide React**.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🏛️ Directory Architecture
+
+```
+frontend/src/
+├── app/
+│   ├── favicon.ico
+│   ├── globals.css             # Luxury monochrome theme & glassmorphic utility classes
+│   ├── layout.tsx              # Root HTML shell, fonts & meta tags
+│   └── page.tsx                # Master UI orchestrator (clean, decoupled)
+├── components/
+│   ├── features/               # Feature-driven modular UI components
+│   │   ├── analytics/
+│   │   │   ├── AeoGeoTab.tsx           # AI Overview citation readiness & AEO blueprint
+│   │   │   ├── CompetitorTopicsTab.tsx # Competing topics, volume & competition pills
+│   │   │   ├── ContentFormulasTab.tsx  # High-CTR titles & PAA questions with 1-click copy
+│   │   │   └── PrimaryDials.tsx        # 4 Primary metric cards (Verdict, Demand, Supply, Weak Spots)
+│   │   ├── landing/
+│   │   │   └── LandingShowcase.tsx     # Hero value prop, 3 capability cards & trust strip
+│   │   ├── scanner/
+│   │   │   └── ScanningConsole.tsx     # Live radar console, 1.4s pacing, & shimmering skeletons
+│   │   └── search/
+│   │       └── SearchCommandBar.tsx    # Keyword input, geo dropdown, submit button & quick presets
+│   ├── layout/
+│   │   ├── Footer.tsx          # Minimalist brand footer
+│   │   └── Header.tsx          # Top navigation bar & Live Engines indicator
+│   └── visuals/
+│       └── Background3D.tsx    # Interactive 3D starlight constellation canvas
+├── hooks/                      # Custom reusable React hooks
+│   ├── useClipboard.ts         # Async clipboard copy with auto-resetting feedback
+│   └── useScanningPacer.ts     # Anti-jitter radar step pacing & smooth progress interpolation
+├── lib/                        # Pure utility functions & formatters
+│   └── exportCsv.ts            # Dynamic CSV serialization and download handler
+├── services/                   # Typed HTTP API Client layer
+│   └── api.ts                  # Engine API call contracts & error mappings
+└── types/                      # Single source of truth for TypeScript interfaces
+    └── keyword.ts              # Domain interfaces (SERP, Competitor, AEO, Response)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🚀 Quick Start
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 1. Install Dependencies
+```bash
+npm install
+```
 
-## Learn More
+### 2. Configure Environment
+Create `.env.local` if you need custom API URLs:
+```env
+NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1
+```
 
-To learn more about Next.js, take a look at the following resources:
+### 3. Run Development Server
+```bash
+npm run dev
+```
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 4. Production Build & Lint
+```bash
+npm run build
+npm run lint
+```
