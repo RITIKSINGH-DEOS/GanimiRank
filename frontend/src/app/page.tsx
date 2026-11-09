@@ -166,7 +166,7 @@ export default function Home() {
             </div>
             <div className="flex items-center gap-2">
               <span className="font-semibold text-sm tracking-tight text-white">GanimiRank</span>
-              <span className="text-[11px] text-zinc-500 font-mono">v1.2</span>
+              <span className="text-[11px] text-zinc-500 font-mono">v1.3</span>
             </div>
           </div>
 
@@ -288,7 +288,7 @@ export default function Home() {
         {/* Results Screen */}
         {result && (
           <div className="space-y-6 pt-2">
-            {/* 4 Clean Metric Cards (With Clear Use-Cases) */}
+            {/* 4 Clean Metric Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
               {/* Card 1: Ranking Opportunity */}
               <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800/80 space-y-3 flex flex-col justify-between">
@@ -347,7 +347,7 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Card 3: Direct Competitors */}
+              {/* Card 3: Direct Competitors & Google Page 1 Link */}
               <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800/80 space-y-3 flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between">
@@ -362,12 +362,22 @@ export default function Home() {
                   </div>
                   <div className="mt-2 text-2xl font-bold tracking-tight text-white">
                     {result.allintitle_count}
-                    <span className="text-xs text-zinc-500 font-normal ml-1.5">titles online</span>
+                    <span className="text-xs text-zinc-400 font-medium ml-1.5">Competing Articles</span>
                   </div>
                 </div>
-                <p className="text-[11px] text-zinc-400 leading-normal pt-2 border-t border-zinc-800/50">
-                  Websites that actually put this exact phrase in their title.
-                </p>
+
+                {/* Direct Google First Page Link */}
+                <div className="pt-2 border-t border-zinc-800/50 flex items-center justify-between text-[11px]">
+                  <span className="text-zinc-400">Live Rankings:</span>
+                  <a
+                    href={`https://www.google.com/search?q=${encodeURIComponent(result.keyword)}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-amber-400 hover:text-amber-300 font-semibold inline-flex items-center gap-1 hover:underline cursor-pointer"
+                  >
+                    View Google Page 1 <ArrowUpRight className="w-3.5 h-3.5" />
+                  </a>
+                </div>
               </div>
 
               {/* Card 4: SERP Weak Spots */}
@@ -463,7 +473,7 @@ export default function Home() {
                               className="text-xs sm:text-sm font-medium text-zinc-200 hover:text-white hover:underline flex items-center gap-1 truncate"
                             >
                               {item.title}
-                              <ArrowUpRight className="w-3.5 h-3.5 text-zinc-500 shrink-0" />
+                              <ArrowUpRight className="w-3 h-3 text-zinc-500 shrink-0" />
                             </a>
                           </div>
                           <p className="text-[11px] text-zinc-500 font-mono truncate">{item.domain}</p>
