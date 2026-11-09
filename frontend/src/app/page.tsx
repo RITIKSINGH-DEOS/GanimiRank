@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Background3D from "@/components/Background3D";
 import {
   Search,
   Zap,
@@ -180,24 +181,27 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-[#09090b] text-zinc-100 flex flex-col font-sans selection:bg-zinc-800 selection:text-white">
+    <div className="min-h-screen bg-[#09090b] text-zinc-100 flex flex-col font-sans selection:bg-emerald-500/20 selection:text-white relative overflow-hidden">
+      {/* Interactive 3D Ambient Background */}
+      <Background3D />
+
       {/* Top Navbar */}
-      <header className="border-b border-zinc-800/80 bg-zinc-950/50 backdrop-blur-md sticky top-0 z-50">
+      <header className="border-b border-white/[0.08] bg-zinc-950/40 backdrop-blur-xl sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-7 h-7 rounded-lg bg-white flex items-center justify-center shadow-[0_0_15px_rgba(255,255,255,0.15)]">
+            <div className="w-7 h-7 rounded-lg bg-white flex items-center justify-center shadow-[0_0_15px_rgba(255,255,255,0.2)]">
               <Zap className="w-4 h-4 text-black fill-black" />
             </div>
             <div className="flex items-center gap-2">
               <span className="font-semibold tracking-tight text-white text-base">GanimiRank</span>
-              <span className="text-[10px] font-mono tracking-widest uppercase bg-zinc-800/80 text-zinc-400 px-1.5 py-0.5 rounded border border-zinc-700/50">
-                v1.5.0
+              <span className="text-[10px] font-mono tracking-widest uppercase bg-zinc-800/80 text-emerald-400 px-1.5 py-0.5 rounded border border-emerald-500/30">
+                v1.7.0
               </span>
             </div>
           </div>
           <div className="flex items-center gap-4 text-xs text-zinc-400 font-mono">
             <span className="hidden sm:inline">Guerrilla Search Engine</span>
-            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[11px]">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 text-[11px] shadow-[0_0_12px_rgba(16,185,129,0.15)]">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
               Live Engines
             </span>
@@ -206,7 +210,7 @@ export default function Home() {
       </header>
 
       {/* Main Workspace */}
-      <main className="flex-1 max-w-6xl w-full mx-auto px-4 py-8 space-y-6">
+      <main className="flex-1 max-w-6xl w-full mx-auto px-4 py-8 space-y-6 relative z-10">
         {/* Search Command Bar */}
         <section className="space-y-3">
           <form
@@ -214,7 +218,7 @@ export default function Home() {
               e.preventDefault();
               handleAnalyze();
             }}
-            className="flex flex-col sm:flex-row gap-2 bg-zinc-900/60 p-1.5 rounded-xl border border-zinc-800/80 shadow-2xl backdrop-blur-xl focus-within:border-zinc-700 transition-colors"
+            className="flex flex-col sm:flex-row gap-2 glass-panel p-2 rounded-2xl shadow-2xl backdrop-blur-2xl focus-within:border-emerald-500/40 focus-within:shadow-[0_0_25px_rgba(16,185,129,0.15)] transition-all"
           >
             <div className="flex-1 flex items-center gap-2.5 px-3 min-h-[44px]">
               <Search className="w-4 h-4 text-zinc-500 shrink-0" />
@@ -275,7 +279,7 @@ export default function Home() {
 
           {/* Quick Presets */}
           <div className="flex items-center gap-2 text-xs text-zinc-500 px-1 overflow-x-auto">
-            <span className="shrink-0 text-zinc-600">Quick test:</span>
+            <span className="shrink-0 text-zinc-500 font-mono">Quick test:</span>
             {["Top 5 Best Cafe in Lucknow", "tunday kababi lucknow", "best street food in hazratganj", "top 5 upcoming tata electric cars in 2027"].map((preset) => (
               <button
                 key={preset}
@@ -284,7 +288,7 @@ export default function Home() {
                   setKeyword(preset);
                   handleAnalyze(preset);
                 }}
-                className="shrink-0 px-2.5 py-1 rounded-md bg-zinc-900/40 hover:bg-zinc-800/60 text-zinc-400 hover:text-zinc-200 border border-zinc-800/50 transition-colors cursor-pointer text-[11px]"
+                className="shrink-0 px-2.5 py-1 rounded-md glass-card-item hover:border-emerald-500/40 text-zinc-400 hover:text-white transition-all cursor-pointer text-[11px]"
               >
                 {preset}
               </button>
@@ -305,7 +309,7 @@ export default function Home() {
             {/* 4 Primary Dials Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
               {/* Card 1: Guerrilla Opportunity Score */}
-              <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800/80 space-y-3 flex flex-col justify-between">
+              <div className="glass-card rounded-2xl p-4.5 space-y-3 flex flex-col justify-between hover:border-emerald-500/40 cursor-default">
                 <div>
                   <div className="flex items-center justify-between">
                     <span className="text-[11px] font-medium text-zinc-400">Guerrilla Verdict</span>
@@ -331,14 +335,14 @@ export default function Home() {
 
                 {/* Score Progress Bar */}
                 <div className="space-y-1.5">
-                  <div className="w-full h-1.5 rounded-full bg-zinc-800 overflow-hidden">
+                  <div className="w-full h-1.5 rounded-full bg-zinc-800/80 overflow-hidden">
                     <div
                       className={`h-full rounded-full transition-all duration-500 ${
                         result.opportunity_score >= 70
-                          ? "bg-emerald-400"
+                          ? "bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]"
                           : result.opportunity_score >= 45
-                          ? "bg-amber-400"
-                          : "bg-rose-400"
+                          ? "bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.5)]"
+                          : "bg-rose-400 shadow-[0_0_8px_rgba(244,63,94,0.5)]"
                       }`}
                       style={{ width: `${result.opportunity_score}%` }}
                     />
@@ -354,7 +358,7 @@ export default function Home() {
               </div>
 
               {/* Card 2: Search Demand & Monthly Volume */}
-              <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800/80 space-y-3 flex flex-col justify-between">
+              <div className="glass-card rounded-2xl p-4.5 space-y-3 flex flex-col justify-between hover:border-orange-500/40 cursor-default">
                 <div>
                   <div className="flex items-center justify-between">
                     <span className="text-[11px] font-medium text-zinc-400">Search Demand</span>
@@ -366,7 +370,7 @@ export default function Home() {
                 </div>
                 
                 {/* Search Volume Display */}
-                <div className="pt-2 border-t border-zinc-800/60 flex items-center justify-between text-xs">
+                <div className="pt-2 border-t border-white/[0.06] flex items-center justify-between text-xs">
                   <span className="text-zinc-400 flex items-center gap-1.5">
                     <Flame className="w-3.5 h-3.5 text-orange-400" />
                     Search Volume:
@@ -378,7 +382,7 @@ export default function Home() {
               </div>
 
               {/* Card 3: Direct Competitors & Google Page 1 Link */}
-              <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800/80 space-y-3 flex flex-col justify-between">
+              <div className="glass-card rounded-2xl p-4.5 space-y-3 flex flex-col justify-between hover:border-cyan-500/40 cursor-default">
                 <div>
                   <div className="flex items-center justify-between">
                     <span className="text-[11px] font-medium text-zinc-400">Direct Competitors</span>
@@ -397,7 +401,7 @@ export default function Home() {
                 </div>
 
                 {/* Direct Google First Page Link */}
-                <div className="pt-2 border-t border-zinc-800/60 flex items-center justify-between text-xs">
+                <div className="pt-2 border-t border-white/[0.06] flex items-center justify-between text-xs">
                   <span className="text-zinc-400 text-[11px]">Check SERP:</span>
                   <a
                     href={`https://www.google.com/search?q=${encodeURIComponent(result.keyword)}`}
@@ -412,7 +416,7 @@ export default function Home() {
               </div>
 
               {/* Card 4: SERP Weak Spots */}
-              <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800/80 space-y-3 flex flex-col justify-between">
+              <div className="glass-card rounded-2xl p-4.5 space-y-3 flex flex-col justify-between hover:border-emerald-500/40 cursor-default">
                 <div>
                   <div className="flex items-center justify-between">
                     <span className="text-[11px] font-medium text-zinc-400">Page 1 Weak Spots</span>
@@ -436,7 +440,7 @@ export default function Home() {
             </div>
 
             {/* Clean Tab Controls */}
-            <div className="flex items-center justify-between border-b border-zinc-800/70 pt-2 pb-1">
+            <div className="flex items-center justify-between border-b border-white/[0.08] pt-2 pb-1">
               <div className="flex items-center gap-6 text-xs font-medium">
                 <button
                   onClick={() => setActiveTab("serp")}
@@ -482,7 +486,7 @@ export default function Home() {
 
             {/* TAB 1: Competing Titles & Topics with Search Volume & Competition */}
             {activeTab === "serp" && (
-              <div className="rounded-xl border border-zinc-800/80 bg-zinc-900/40 divide-y divide-zinc-800/50">
+              <div className="glass-panel rounded-2xl divide-y divide-white/[0.06] overflow-hidden">
                 {(!result.competitor_topics || result.competitor_topics.length === 0) ? (
                   <div className="p-8 text-center text-xs text-zinc-500">
                     No competitor topics found.
@@ -491,7 +495,7 @@ export default function Home() {
                   result.competitor_topics.map((topic) => (
                     <div
                       key={topic.position}
-                      className="p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-zinc-900/60 transition-colors"
+                      className="p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-white/[0.035] transition-colors cursor-default"
                     >
                       <div className="flex items-start gap-3 min-w-0">
                         <span className="text-xs font-mono text-zinc-500 w-5 pt-0.5 shrink-0">
@@ -516,7 +520,7 @@ export default function Home() {
                       {/* Metrics & Action */}
                       <div className="flex items-center gap-3 shrink-0 self-end sm:self-center pl-8 sm:pl-0">
                         {/* Search Volume Pill */}
-                        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-zinc-800/70 border border-zinc-700/50 text-xs">
+                        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-zinc-950/70 border border-white/[0.08] text-xs shadow-sm">
                           <Flame className="w-3 h-3 text-orange-400" />
                           <span className="font-mono font-medium text-emerald-400">
                             {topic.search_volume}
@@ -528,10 +532,10 @@ export default function Home() {
                           <span
                             className={`text-[10px] font-semibold px-2 py-0.5 rounded border ${
                               topic.competition_level === "Low"
-                                ? "text-emerald-400 bg-emerald-500/10 border-emerald-500/20"
+                                ? "text-emerald-400 bg-emerald-500/10 border-emerald-500/20 shadow-[0_0_10px_rgba(52,211,153,0.15)]"
                                 : topic.competition_level === "Medium"
-                                ? "text-amber-400 bg-amber-500/10 border-amber-500/20"
-                                : "text-rose-400 bg-rose-500/10 border-rose-500/20"
+                                ? "text-amber-400 bg-amber-500/10 border-amber-500/20 shadow-[0_0_10px_rgba(251,191,36,0.15)]"
+                                : "text-rose-400 bg-rose-500/10 border-rose-500/20 shadow-[0_0_10px_rgba(244,63,94,0.15)]"
                             }`}
                           >
                             {topic.competition_level} Competition
@@ -547,7 +551,7 @@ export default function Home() {
                             setKeyword(topic.keyword);
                             handleAnalyze(topic.keyword);
                           }}
-                          className="px-2.5 py-1 text-[11px] font-medium text-zinc-300 hover:text-white bg-zinc-800 hover:bg-zinc-700 rounded border border-zinc-700 transition-colors flex items-center gap-1 cursor-pointer shrink-0"
+                          className="px-2.5 py-1 text-[11px] font-medium text-zinc-300 hover:text-white bg-zinc-800/80 hover:bg-zinc-700/80 hover:border-emerald-500/40 rounded border border-zinc-700 transition-all flex items-center gap-1 cursor-pointer shrink-0 shadow-sm"
                           title="Deep scan this competitor topic"
                         >
                           Analyze
@@ -563,24 +567,24 @@ export default function Home() {
             {/* TAB 2: AI Overviews & GEO Blueprint */}
             {activeTab === "aeo" && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="p-5 rounded-xl border border-zinc-800/80 bg-zinc-900/40 space-y-3">
+                <div className="glass-card rounded-2xl p-5 space-y-3 hover:border-cyan-500/40">
                   <span className="text-xs font-semibold text-zinc-300">
                     AI Citation Readiness
                   </span>
                   <div className="space-y-2 pt-1 text-xs">
-                    <div className="flex justify-between py-1.5 border-b border-zinc-800/50">
+                    <div className="flex justify-between py-1.5 border-b border-white/[0.06]">
                       <span className="text-zinc-400">Google AI Overview Expected</span>
                       <span className="font-semibold text-zinc-200">
                         {result.aeo_geo.has_ai_overview ? "Yes" : "No"}
                       </span>
                     </div>
-                    <div className="flex justify-between py-1.5 border-b border-zinc-800/50">
+                    <div className="flex justify-between py-1.5 border-b border-white/[0.06]">
                       <span className="text-zinc-400">Featured Snippet Opportunity</span>
                       <span className="font-semibold text-zinc-200">
                         {result.aeo_geo.has_featured_snippet ? "High" : "Low"}
                       </span>
                     </div>
-                    <div className="flex justify-between py-1.5 border-b border-zinc-800/50">
+                    <div className="flex justify-between py-1.5 border-b border-white/[0.06]">
                       <span className="text-zinc-400">Recommended Layout</span>
                       <span className="font-mono text-zinc-300 uppercase text-[11px]">
                         {result.aeo_geo.recommended_format}
@@ -589,7 +593,7 @@ export default function Home() {
                   </div>
                 </div>
 
-                <div className="p-5 rounded-xl border border-zinc-800/80 bg-zinc-900/40 space-y-3">
+                <div className="glass-card rounded-2xl p-5 space-y-3 hover:border-amber-500/40">
                   <span className="text-xs font-semibold text-zinc-300 flex items-center gap-1.5">
                     <Sparkles className="w-3.5 h-3.5 text-amber-400" />
                     Guerrilla Blueprint for AEO
@@ -605,7 +609,7 @@ export default function Home() {
             {activeTab === "content" && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* High CTR Titles */}
-                <div className="p-5 rounded-xl border border-zinc-800/80 bg-zinc-900/40 space-y-3">
+                <div className="glass-card rounded-2xl p-5 space-y-3 hover:border-emerald-500/40">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-semibold text-zinc-300">
                       Viral & High-CTR Title Formulas
@@ -618,7 +622,7 @@ export default function Home() {
                     {result.high_ctr_titles.map((t, idx) => (
                       <div
                         key={idx}
-                        className="p-3 rounded-lg bg-zinc-950/50 border border-zinc-800/50 flex items-center justify-between gap-3 text-xs hover:border-zinc-700/60 transition-colors group"
+                        className="glass-card-item p-3 rounded-xl flex items-center justify-between gap-3 text-xs hover:border-emerald-500/40 hover:bg-zinc-900/60 transition-all group"
                       >
                         <span className="text-zinc-200 font-medium">{t}</span>
                         <button
@@ -638,7 +642,7 @@ export default function Home() {
                 </div>
 
                 {/* People Also Ask (H2/H3s) */}
-                <div className="p-5 rounded-xl border border-zinc-800/80 bg-zinc-900/40 space-y-3">
+                <div className="glass-card rounded-2xl p-5 space-y-3 hover:border-cyan-500/40">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-semibold text-zinc-300">
                       People Also Ask (H2/H3 Section Outlines)
@@ -651,7 +655,7 @@ export default function Home() {
                     {result.people_also_ask.map((q, idx) => (
                       <div
                         key={idx}
-                        className="p-3 rounded-lg bg-zinc-950/50 border border-zinc-800/50 flex items-center justify-between gap-3 text-xs hover:border-zinc-700/60 transition-colors group"
+                        className="glass-card-item p-3 rounded-xl flex items-center justify-between gap-3 text-xs hover:border-cyan-500/40 hover:bg-zinc-900/60 transition-all group"
                       >
                         <span className="text-zinc-300">{q}</span>
                         <button
@@ -676,7 +680,7 @@ export default function Home() {
       </main>
 
       {/* Sleek Minimal Footer */}
-      <footer className="border-t border-zinc-800/80 bg-zinc-950/30 py-4 text-center text-xs text-zinc-600 font-mono">
+      <footer className="border-t border-white/[0.08] bg-zinc-950/40 backdrop-blur-md py-4 text-center text-xs text-zinc-500 font-mono relative z-10">
         GanimiRank • Autonomous Guerrilla Search Intelligence & AEO/GEO Dominance Engine
       </footer>
     </div>
