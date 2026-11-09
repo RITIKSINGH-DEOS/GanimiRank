@@ -7,16 +7,22 @@ from typing import Optional, Dict, Any
 BACKEND_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 DATA_DIR = os.path.join(BACKEND_DIR, "data")
 os.makedirs(DATA_DIR, exist_ok=True)
-DB_PATH = os.path.join(DATA_DIR, "ganimirank.db")
+DB_PATH = os.path.join(DATA_DIR, "sagrank.db")
 
-# Seamless migration if db exists in legacy backend root
-LEGACY_DB_PATH = os.path.join(BACKEND_DIR, "ganimirank.db")
-if not os.path.exists(DB_PATH) and os.path.exists(LEGACY_DB_PATH):
-    try:
-        import shutil
-        shutil.copy2(LEGACY_DB_PATH, DB_PATH)
-    except Exception:
-        pass
+# Seamless migration if db exists with legacy name
+LEGACY_DB_PATHS = [
+    os.path.join(DATA_DIR, "ganimirank.db"),
+    os.path.join(BACKEND_DIR, "ganimirank.db"),
+]
+if not os.path.exists(DB_PATH):
+    import shutil
+    for legacy_path in LEGACY_DB_PATHS:
+        if os.path.exists(legacy_path):
+            try:
+                shutil.copy2(legacy_path, DB_PATH)
+                break
+            except Exception:
+                pass
 
 def get_connection():
     conn = sqlite3.connect(DB_PATH)

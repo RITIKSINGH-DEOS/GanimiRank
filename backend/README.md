@@ -1,4 +1,4 @@
-# GanimiRank Backend Service
+# SAGRank Backend Service
 
 High-performance Autonomous Search Intelligence & AEO/GEO Ranking Engine powered by **FastAPI**, **Pydantic V2**, and an **SQLite 48h Cache Engine**.
 
@@ -32,7 +32,7 @@ backend/
 │   └── main.py                       # FastAPI application factory & middleware setup
 ├── data/                             # Persistent cache & database storage
 │   ├── .gitkeep
-│   └── ganimirank.db                 # SQLite cache (auto-generated, gitignored)
+│   └── sagrank.db                    # SQLite cache (auto-generated, gitignored)
 ├── tests/                            # Automated test suite (Pytest)
 │   ├── __init__.py
 │   ├── test_engines.py               # Unit tests for scoring, expansion, & competitor logic

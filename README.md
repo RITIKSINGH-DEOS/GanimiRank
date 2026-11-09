@@ -1,4 +1,4 @@
-# ⚔️ GanimiRank (गनिमी रैंक)
+# ⚡ SAGRank
 > **Autonomous Guerrilla Search Intelligence & Generative Engine Optimization (AEO/GEO) Platform**
 
 [![Next.js 16](https://img.shields.io/badge/Next.js-16.4.5-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
@@ -27,13 +27,13 @@ Modern search optimization software is fundamentally broken for independent crea
 - Independent bloggers and new ventures are coerced into paying **$1,200 to $3,600 annually** for enterprise SaaS subscriptions (Ahrefs, SEMrush) that fail to surface hyper-local queries, ignore Google AI Overviews, and hide true ranking viability.
 
 ### The Paradigm Shift: Guerrilla Search Intelligence
-Inspired by the legendary military doctrine of **Chhatrapati Shivaji Maharaj** (*Ganimi Kava* — defeating massive imperial armies through tactical precision and exploiting enemy vulnerabilities), **GanimiRank** flips the SEO equation. Instead of fighting entrenched high-Domain-Authority conglomerates head-on, GanimiRank executes automated reconnaissance to locate **live SERP weak spots** (un-optimized titles, Reddit threads, Quora forums, thin directory listings) and calculates the deterministic **Keyword Golden Ratio (KGR)** alongside modern **AEO/GEO Generative Engine citations**.
+Inspired by the legendary military doctrine of **Chhatrapati Shivaji Maharaj** (*Ganimi Kava* — defeating massive imperial armies through tactical precision and exploiting enemy vulnerabilities), **GanimiRank** flips the SEO equation. Instead of fighting entrenched high-Domain-Authority conglomerates head-on, SAGRank executes automated reconnaissance to locate **live SERP weak spots** (un-optimized titles, Reddit threads, Quora forums, thin directory listings) and calculates the deterministic **Keyword Golden Ratio (KGR)** alongside modern **AEO/GEO Generative Engine citations**.
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────────┐
 │                             THE PARADIGM SHIFT                                   │
 ├─────────────────────────────────────────┬────────────────────────────────────────┤
-│ ❌ THE PAST (Passive Legacy SaaS)       │ ✅ THE PRESENT (GanimiRank Autonomous) │
+│ ❌ THE PAST (Passive Legacy SaaS)       │ ✅ THE PRESENT (SAGRank Autonomous) │
 ├─────────────────────────────────────────┼────────────────────────────────────────┤
 │ • $120-$300/month recurring tax         │ • 100% Free Forever ($0 CapEx/OpEx)    │
 │ • Arbitrary backlink-based "KD Score"   │ • Real-time allintitle KGR Supply      │
@@ -47,7 +47,7 @@ Inspired by the legendary military doctrine of **Chhatrapati Shivaji Maharaj** (
 
 ## 🚨 The 4 Critical Crises Solved
 
-| Crisis & Authority Metric | The Status Quo (Legacy Systems) | The GanimiRank Autonomous Solution |
+| Crisis & Authority Metric | The Status Quo (Legacy Systems) | The SAGRank Autonomous Solution |
 | :--- | :--- | :--- |
 | **1. The "KD Score" Mirage**<br>*(90.63% Zero-Traffic Failure)* | Tools assign arbitrary 0–100 Difficulty scores based purely on backlinks. High-DA sites without relevant content still register as "impassable". | **Deterministic `allintitle` (KGR) Audit**: Directly measures exact web-wide supply. Queries with `< 30` competing titles receive immediate Green-Signal priority. |
 | **2. Authority Monopolization**<br>*(Forbes/Zomato Dominance)* | New publishers avoid profitable queries assuming corporate giants cannot be outranked. | **SERP Weak-Spot Scanner**: Detects when Google defaults to Quora, Reddit, Medium, or thin directories due to "Information Gain Deficits", signaling instant outrank capability. |
@@ -186,7 +186,7 @@ System diagnostic healthcheck returning microservice availability and engine ver
 
 ## 🛡️ Enterprise Trust & Safety Air-Gap
 
-To prevent scrapers from triggering IP bans and to isolate external unstructured HTML from the application runtime, GanimiRank implements an architectural **Air-Gap Quarantine Pattern**:
+To prevent scrapers from triggering IP bans and to isolate external unstructured HTML from the application runtime, SAGRank implements an architectural **Air-Gap Quarantine Pattern**:
 
 ```
 [ External World Wide Web / Google SERP ]
@@ -285,6 +285,6 @@ Route (app)
 ---
 
 ## 📜 Intellectual Property & Authorship
-- **Architecture & Concept:** Ritik Singh & The GanimiRank Engineering Guild
+- **Architecture & Concept:** Ritik Singh & The SAGRank Engineering Guild
 - **License:** Open Source under the [MIT License](LICENSE)
-- **Repository:** [https://github.com/RITIKSINGH-DEOS/GanimiRank.git](https://github.com/RITIKSINGH-DEOS/GanimiRank.git)
+- **Repository:** [https://github.com/RITIKSINGH-DEOS/SAGRank.git](https://github.com/RITIKSINGH-DEOS/SAGRank.git)

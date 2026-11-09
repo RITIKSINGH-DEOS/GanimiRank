@@ -1,6 +1,6 @@
-# GanimiRank System Architecture
+# SAGRank System Architecture
 
-Technical architecture specification for **GanimiRank (गनिमी रैंक)** — Autonomous Search Intelligence & AEO/GEO Dominance Engine.
+Technical architecture specification for **SAGRank** — Autonomous Search Intelligence & AEO/GEO Dominance Engine.
 
 ---
 
@@ -14,7 +14,7 @@ Technical architecture specification for **GanimiRank (गनिमी रैं
                                            │ HTTP REST (JSON)
                                            ▼
                ┌────────────────────────────────────────────────────────┐
-               │             GanimiRank Backend (FastAPI)               │
+               │              SAGRank Backend (FastAPI)                 │
                │              Port 8000 / Uvicorn Daemon                │
                └───────────┬───────────────────────────────┬────────────┘
                            │                               │
@@ -97,7 +97,7 @@ backend/
 │   │   └── title_engine.py     # 7 High-CTR Headline formulas & PAA outlines
 │   └── main.py                 # FastAPI application factory
 ├── data/                       # Local SQLite storage (gitignored)
-│   └── ganimirank.db
+│   └── sagrank.db
 ├── tests/                      # Automated Pytest suite
 │   ├── test_engines.py
 │   └── test_health.py
@@ -114,4 +114,4 @@ backend/
 | **Organic SERP & Weak Spots** | DuckDuckGo Scraper | `html.duckduckgo.com` | None (Public) | $0.00 |
 | **SERP Fallback (Optional)** | Serper.dev | `google.serper.dev/search` | `X-API-KEY` (Optional) | Free tier |
 | **AEO & GEO Scoring** | Local Heuristic Matrix | Local CPU algorithm | None (Local Python) | $0.00 |
-| **Cache Storage** | SQLite 3 | `backend/data/ganimirank.db` | Local file | $0.00 |
+| **Cache Storage** | SQLite 3 | `backend/data/sagrank.db` | Local file | $0.00 |

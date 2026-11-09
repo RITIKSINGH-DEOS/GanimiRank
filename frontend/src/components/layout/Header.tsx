@@ -12,9 +12,9 @@ export default function Header() {
             <Zap className="w-4 h-4 text-black fill-black" />
           </div>
           <div className="flex items-center gap-2">
-            <span className="font-semibold tracking-tight text-white text-base">GanimiRank</span>
+            <span className="font-semibold tracking-tight text-white text-base">SAGRank</span>
             <span className="text-[10px] font-mono tracking-widest uppercase bg-zinc-900 text-zinc-300 px-1.5 py-0.5 rounded border border-zinc-700/60">
-              v2.1.0
+              v3.0.0
             </span>
           </div>
         </div>

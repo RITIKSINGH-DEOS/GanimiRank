@@ -4,7 +4,7 @@ from typing import List, Optional, Dict, Any
 class HealthResponse(BaseModel):
     status: str = "healthy"
     version: str = "1.0.0"
-    service: str = "GanimiRank Backend Core"
+    service: str = "SAGRank Backend Core"
 
 class KeywordAnalyzeRequest(BaseModel):
     keyword: str = Field(..., min_length=2, description="Target keyword or seed topic")

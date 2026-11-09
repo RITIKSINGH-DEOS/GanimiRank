@@ -1,9 +1,9 @@
 @echo off
-TITLE GanimiRank Launcher
+TITLE SAGRank Launcher
 COLOR 0A
 
 echo ==============================================================================
-echo                 GANIMIRANK: GUERRILLA SEARCH INTELLIGENCE
+echo                 SAGRANK: GUERRILLA SEARCH INTELLIGENCE
 echo                Autonomous SERP & AEO/GEO Dominance Console
 echo ==============================================================================
 echo.
@@ -24,23 +24,23 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
-echo [1/3] Starting GanimiRank FastAPI Backend on http://127.0.0.1:8000 ...
+echo [1/3] Starting SAGRank FastAPI Backend on http://127.0.0.1:8000 ...
 cd backend
-start "GanimiRank Backend Core (:8000)" cmd /k ".\venv\Scripts\activate && uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload"
+start "SAGRank Backend Core (:8000)" cmd /k ".\venv\Scripts\activate && uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload"
 cd ..
 
-echo [2/3] Starting GanimiRank Next.js Frontend Console on http://localhost:3000 ...
+echo [2/3] Starting SAGRank Next.js Frontend Console on http://localhost:3000 ...
 cd frontend
-start "GanimiRank Frontend Console (:3000)" cmd /k "npm run dev"
+start "SAGRank Frontend Console (:3000)" cmd /k "npm run dev"
 cd ..
 
-echo [3/3] Launching GanimiRank Dashboard in your default browser...
+echo [3/3] Launching SAGRank Dashboard in your default browser...
 timeout /t 3 >nul
 start http://localhost:3000
 
 echo.
 echo ==============================================================================
-echo [SUCCESS] GanimiRank is running!
+echo [SUCCESS] SAGRank is running!
 echo - Frontend: http://localhost:3000
 echo - Backend:  http://127.0.0.1:8000
 echo - API Docs: http://127.0.0.1:8000/docs

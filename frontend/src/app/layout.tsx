@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "GanimiRank | Autonomous Guerrilla Search Intelligence & AEO/GEO Engine",
+  title: "SAGRank | Autonomous Guerrilla Search Intelligence & AEO/GEO Engine",
   description: "Enterprise-grade keyword discovery, SERP weak-spot detection, and Generative Engine Optimization for high-velocity creators.",
 };
 

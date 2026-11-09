@@ -1,6 +1,6 @@
-# GanimiRank Frontend Console
+# SAGRank Frontend Console
 
-Luxury High-Performance Web Console for GanimiRank built with **Next.js 16 (App Router)**, **TypeScript**, **Tailwind CSS v4**, and **Lucide React**.
+Luxury High-Performance Web Console for SAGRank built with **Next.js 16 (App Router)**, **TypeScript**, **Tailwind CSS v4**, and **Lucide React**.
 
 ---
 

@@ -4,7 +4,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/a
 
 /**
  * Analyzes keyword viability, SERP weak spots, AEO citation blueprints,
- * and competitor topic expansion via GanimiRank Backend Service.
+ * and competitor topic expansion via SAGRank Backend Service.
  */
 export async function analyzeKeyword(request: KeywordAnalyzeRequest): Promise<KeywordAnalyzeResponse> {
   const res = await fetch(`${API_BASE_URL}/analyze`, {

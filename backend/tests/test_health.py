@@ -13,4 +13,4 @@ def test_health():
     assert response.status_code == 200
     data = response.json()
     assert data["status"] == "healthy"
-    assert data["service"] == "GanimiRank Backend Core"
+    assert data["service"] == "SAGRank Backend Core"
