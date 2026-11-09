@@ -10,6 +10,7 @@ from app.services.serp_engine import extract_allintitle_count, scrape_top_serp
 from app.services.aeo_geo_engine import analyze_aeo_geo_readiness
 from app.services.scoring_engine import calculate_opportunity
 from app.services.title_engine import generate_high_ctr_titles, generate_paa_questions
+from app.services.cache_service import get_cached_analysis, save_cached_analysis
 
 router = APIRouter()
 
@@ -29,7 +30,8 @@ def get_quick_suggestions(
 @router.post("/analyze", response_model=KeywordAnalyzeResponse)
 def analyze_keyword(payload: KeywordAnalyzeRequest):
     """
-    Comprehensive Guerrilla Keyword & SERP Analysis:
+    Comprehensive Guerrilla Keyword & SERP Analysis with SQLite Local Caching:
+    - Cached Hit Check
     - Autocomplete Expansion
     - Real-Time Allintitle extraction (KGR)
     - Top 10 SERP Audit & Weak Spot Identification
@@ -38,6 +40,12 @@ def analyze_keyword(payload: KeywordAnalyzeRequest):
     - High-CTR Title & PAA Headings Generation
     """
     try:
+        # Check SQLite Cache first unless force_refresh is requested
+        if not payload.force_refresh:
+            cached = get_cached_analysis(payload.keyword, payload.country, payload.local_geo)
+            if cached:
+                return KeywordAnalyzeResponse(**cached)
+
         # 1. Expand keyword universe
         expanded = expand_keywords(
             seed=payload.keyword,
@@ -76,7 +84,7 @@ def analyze_keyword(payload: KeywordAnalyzeRequest):
         titles = generate_high_ctr_titles(payload.keyword, payload.local_geo)
         paa = generate_paa_questions(payload.keyword, payload.local_geo)
         
-        return KeywordAnalyzeResponse(
+        response_data = KeywordAnalyzeResponse(
             keyword=payload.keyword,
             country=payload.country,
             local_geo=payload.local_geo,
@@ -92,5 +100,15 @@ def analyze_keyword(payload: KeywordAnalyzeRequest):
             high_ctr_titles=titles,
             people_also_ask=paa
         )
+
+        # Save to SQLite local cache
+        save_cached_analysis(
+            payload.keyword,
+            payload.country,
+            payload.local_geo,
+            response_data.model_dump()
+        )
+        
+        return response_data
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Analysis pipeline error: {str(e)}")
